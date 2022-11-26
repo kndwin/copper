@@ -50,7 +50,7 @@ const Header = () => {
         <p className="font-serif text-sand-12">copper</p>
         <p className="rounded bg-grass-5 px-1 text-sm font-bold">BETA</p>
       </div>
-      <div className="flex items-center gap-2 ">
+      <div className="flex items-center gap-4 ">
         <IconToggleDarkMode />
         <SignInButton />
       </div>
@@ -70,17 +70,42 @@ const MenuFilter = () => {
       <Popover.Content className="flex flex-col gap-1" sideOffset={8} size="xl">
         <label id="hours">Opening hours</label>
         <Select>
-          <Select.Trigger asChild>
-            <Button>
-              Opening hours
+          <Select.Trigger>
+            <Select.Value placeholder="Opening hours" />
+            <Select.Icon>
               <HiOutlineChevronDown />
-            </Button>
+            </Select.Icon>
           </Select.Trigger>
-          <Select.Content2>
-            <Select.Item value="1">
-              <Select.Text>1</Select.Text>
-            </Select.Item>
-          </Select.Content2>
+          <Select.Portal>
+            <Select.Content>
+              <Select.Viewport>
+                <Select.Item value="0">12:00 AM</Select.Item>
+                <Select.Item value="1">1:00 AM</Select.Item>
+                <Select.Item value="2">2:00 AM</Select.Item>
+                <Select.Item value="3">3:00 AM</Select.Item>
+                <Select.Item value="4">4:00 AM</Select.Item>
+                <Select.Item value="5">5:00 AM</Select.Item>
+                <Select.Item value="6">6:00 AM</Select.Item>
+                <Select.Item value="7">7:00 AM</Select.Item>
+                <Select.Item value="8">8:00 AM</Select.Item>
+                <Select.Item value="9">9:00 AM</Select.Item>
+                <Select.Item value="10">10:00 AM</Select.Item>
+                <Select.Item value="11">11:00 AM</Select.Item>
+                <Select.Item value="12">12:00 PM</Select.Item>
+                <Select.Item value="13">1:00 PM</Select.Item>
+                <Select.Item value="14">2:00 PM</Select.Item>
+                <Select.Item value="15">3:00 PM</Select.Item>
+                <Select.Item value="16">4:00 PM</Select.Item>
+                <Select.Item value="17">5:00 PM</Select.Item>
+                <Select.Item value="18">6:00 PM</Select.Item>
+                <Select.Item value="19">7:00 PM</Select.Item>
+                <Select.Item value="20">8:00 PM</Select.Item>
+                <Select.Item value="21">9:00 PM</Select.Item>
+                <Select.Item value="22">10:00 PM</Select.Item>
+                <Select.Item value="23">11:00 PM</Select.Item>
+              </Select.Viewport>
+            </Select.Content>
+          </Select.Portal>
         </Select>
         <input type="range" min={0} max={5} className="bg-sand-12" />
         <label>Atmosphere</label>
