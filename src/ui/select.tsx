@@ -2,18 +2,19 @@ import * as P from "@radix-ui/react-select";
 import { forwardRef } from "react";
 import { styled, VariantPropsOf } from "classname-variants/react";
 import cx from "classnames";
-import { HiCheck } from "react-icons/hi";
+import { HiCheck, HiArrowUp, HiArrowDown } from "react-icons/hi";
 
 const Root = P.Root;
 
 const StyledTrigger = styled(P.Trigger, {
-  base: "flex items-center gap-2 rounded",
+  base: "flex items-center gap-2 rounded justify-between",
   variants: {
     color: {
       sand: "bg-sand-4 hover:bg-sand-6 outline-sand-8",
     },
     size: {
-      md: "px-2 py-1 w-fit",
+      md: "px-2 py-1",
+      lg: "px-4 py-2",
     },
   },
   defaultVariants: {
@@ -22,7 +23,7 @@ const StyledTrigger = styled(P.Trigger, {
   },
 });
 
-const StyledViewport = styled(P.Viewport, {
+const StyledContent = styled(P.Content, {
   base: cx(
     "radix-side-top:animate-in radix-side-top:fade-in-50",
     "radix-side-bottom:animate-in radix-side-bottom:fade-in-50"
@@ -73,13 +74,30 @@ const SelectItem = forwardRef<
 
 SelectItem.displayName = "Item";
 
+const Content = ({
+  children,
+  ...props
+}: P.SelectContentProps & VariantPropsOf<typeof StyledContent>) => {
+  return (
+    <P.Portal>
+      <StyledContent {...props}>
+        <P.ScrollUpButton className="flex items-center justify-center py-2 text-sand-8">
+          <HiArrowUp />
+        </P.ScrollUpButton>
+        <P.Viewport>{children}</P.Viewport>
+        <P.ScrollDownButton className="flex items-center justify-center py-2 text-sand-8">
+          <HiArrowDown />
+        </P.ScrollDownButton>
+      </StyledContent>
+    </P.Portal>
+  );
+};
+
 export const Select = Object.assign(Root, {
   Trigger: StyledTrigger,
   Icon: P.Icon,
   Value: P.Value,
-  Content: P.Content,
-  Portal: P.Portal,
-  Viewport: StyledViewport,
+  Content,
   Item: SelectItem,
   Text: P.ItemText,
 });

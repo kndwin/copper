@@ -38,8 +38,8 @@ model Account {
 model Session {
   id           String   @id @default(cuid())
   sessionToken String   @unique
-  userId       String
   expires      DateTime
+  userId       String
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
@@ -51,6 +51,7 @@ model User {
   image         String?
   accounts      Account[]
   sessions      Session[]
+	reviews				Review[]
 }
 
 model VerificationToken {
@@ -59,4 +60,45 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+model Review {
+	id            String    @id @default(cuid())
+	userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+	socialFacebook String?
+	socialInstagram String?
+	review String?
+	coffee Quality? @default(NONE)
+	food   Quality?
+	powerpoints Powerpoints?
+	wifi Wifi?
+}
+
+model PlaceDetails {
+	placeId            String    @id 
+	name String?
+	formattedAddress String?
+	formattedPhoneNumber String?
+	website String?
+	openingHours Json?
+	geometry Json?
+}
+
+enum Quality {
+	NONE
+	POOR
+	OKAY
+	GOOD
+}
+enum Powerpoints {
+	NONE
+	LIMITED
+	MANY
+}
+
+enum Wifi {
+	NONE
+	WEAK
+	STRONG
 }
