@@ -1,61 +1,57 @@
+import { type OpeningPeriod } from "@googlemaps/google-maps-services-js";
 import { styled } from "classname-variants/react";
-import { useState, Suspense, ReactNode } from "react";
 
 import { Text } from "~/ui";
-import { AutocompletePlace, type TPlacePrediction } from "~/features/common";
-import { trpc } from "~/utils/trpc";
-import { SBox, SLabel } from "./common";
-import { type OpeningPeriod } from "@googlemaps/google-maps-services-js";
-import { RouterOutputs } from "~/utils/trpc";
+import { AutocompletePlace } from "~/features/common";
+import { type RouterOutputs, trpc } from "~/utils/trpc";
+
+import { useReviewFormStore } from "./useReviewFormStore";
+import { Box, Label, Skeleton } from "./common";
 
 export const SearchCafe = () => {
-  const [place, setPlace] = useState<TPlacePrediction | null>(null);
+  const placeId = useReviewFormStore((s) => s.formData.placeId);
+  const setFormState = useReviewFormStore((s) => s.setFormState);
   const placeDetailsQuery = trpc.places.getPlaceDetails.useQuery(
-    { placeId: place?.place_id as string },
-    { enabled: Boolean(place?.place_id) }
+    { placeId },
+    {
+      enabled: placeId.length > 0,
+      onSuccess: (data) => {
+        console.log("place query finished");
+        console.log({ data });
+      },
+    }
   );
 
-  const isLoading = placeDetailsQuery.isLoading && Boolean(place);
+  const isLoading = placeDetailsQuery.isLoading && Boolean(placeId);
 
   return (
-    <SBox>
-      <SLabel>Cafe</SLabel>
+    <Box>
+      <Label>Cafe</Label>
       <AutocompletePlace
-        onSelectPrediction={(prediction) => setPlace(prediction)}
+        onSelectPrediction={(prediction) =>
+          setFormState("placeId", prediction.place_id)
+        }
       />
 
       {isLoading && <CafeDetailsLoadingSkeleton />}
       {placeDetailsQuery.isSuccess && (
         <CafeDetails details={placeDetailsQuery.data} />
       )}
-    </SBox>
+    </Box>
   );
 };
 
-const CafeDetailsLoadingSkeleton = () => {
+export const CafeDetailsLoadingSkeleton = () => {
   return (
     <div className="mt-4 grid w-full grid-cols-2 gap-4">
-      <SSkeleton className="col-span-2 h-16 w-full" />
-      <SSkeleton className="h-40 w-full" />
-      <SSkeleton className="h-40 w-full" />
-      <SSkeleton className="h-40 w-full" />
-      <SSkeleton className="h-40 w-full" />
+      <Skeleton className="col-span-2 h-16 w-full" />
+      <Skeleton className="h-40 w-full" />
+      <Skeleton className="h-40 w-full" />
+      <Skeleton className="h-40 w-full" />
+      <Skeleton className="h-40 w-full" />
     </div>
   );
 };
-
-const SSkeleton = styled("div", {
-  base: "animate-pulse bg-sand-6",
-  variants: {
-    variant: {
-      box: "rounded",
-      circle: "rounded-full",
-    },
-  },
-  defaultVariants: {
-    variant: "box",
-  },
-});
 
 type TCafeDetailsProps = {
   details: RouterOutputs["places"]["getPlaceDetails"];
@@ -63,16 +59,16 @@ type TCafeDetailsProps = {
 const CafeDetails = ({ details }: TCafeDetailsProps) => {
   return (
     <div className="mt-4 grid grid-cols-2 gap-4 rounded p-4 ring-1 ring-sand-8">
-      <SBox className="col-span-2">
+      <Box className="col-span-2">
         <Text className="text-3xl font-bold">{details?.name}</Text>
-      </SBox>
-      <SBox>
-        <SBox>
-          <SLabel>Address</SLabel>
+      </Box>
+      <Box>
+        <Box>
+          <Label>Address</Label>
           <Text>{details?.formattedAddress}</Text>
-        </SBox>
-        <SBox>
-          <SLabel>Website</SLabel>
+        </Box>
+        <Box>
+          <Label>Website</Label>
           {details.website ? (
             <Text as="a" href={details.website} target="_blank">
               {details.website}
@@ -80,16 +76,16 @@ const CafeDetails = ({ details }: TCafeDetailsProps) => {
           ) : (
             <Text>No websites available</Text>
           )}
-        </SBox>
-      </SBox>
-      <SBox>
-        <SLabel>Opening hours</SLabel>
+        </Box>
+      </Box>
+      <Box>
+        <Label>Opening hours</Label>
         {details.openingHours ? (
           <TableOpeningHours periods={details.openingHours} />
         ) : (
           <Text>No opening hours available</Text>
         )}
-      </SBox>
+      </Box>
     </div>
   );
 };

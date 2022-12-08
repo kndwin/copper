@@ -5,15 +5,32 @@ generator client {
   provider = "prisma-client-js"
 }
 
+generator zod {
+  provider                 = "zod-prisma"
+  output                   = "../src/types/prismaZod" // (default) the directory where generated zod schemas will be saved
+
+  relationModel            = true // (default) Create and export both plain and related models.
+  // relationModel         = "default" // Do not export model without relations.
+  // relationModel         = false // Do not generate related model
+
+  modelCase                = "PascalCase" // (default) Output models using pascal case (ex. UserModel, PostModel)
+  // modelCase             = "camelCase" // Output models using camel case (ex. userModel, postModel)
+
+  modelSuffix              = "Model" // (default) Suffix to apply to your prisma models when naming Zod schemas
+
+  // useDecimalJs          = false // (default) represent the prisma Decimal type using as a JS number
+  useDecimalJs             = true // represent the prisma Decimal type using Decimal.js (as Prisma does)
+
+  imports                  = null // (default) will import the referenced file in generated schemas to be used via imports.someExportedVariable
+
+  // https://www.prisma.io/docs/concepts/components/prisma-client/working-with-fields/working-with-json-fields#filtering-by-null-values
+  prismaJsonNullability    = true // (default) uses prisma's scheme for JSON field nullability
+  // prismaJsonNullability = false // allows null assignment to optional JSON fields
+}
+
 datasource db {
   provider = "cockroachdb"
   url      = env("DATABASE_URL")
-}
-
-model Example {
-  id        String   @id @default(cuid())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
 }
 
 // Necessary for Next auth
@@ -51,7 +68,7 @@ model User {
   image         String?
   accounts      Account[]
   sessions      Session[]
-	reviews				Review[]
+  reviews       Review[]
 }
 
 model VerificationToken {
@@ -63,42 +80,55 @@ model VerificationToken {
 }
 
 model Review {
-	id            String    @id @default(cuid())
-	userId       String
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-	socialFacebook String?
-	socialInstagram String?
-	review String?
-	coffee Quality? @default(NONE)
-	food   Quality?
-	powerpoints Powerpoints?
-	wifi Wifi?
+  id              String       @id @default(cuid())
+  userId          String
+  user            User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  status          Status?      @default(DRAFT)
+  title           String
+  socialFacebook  String?
+  socialInstagram String?
+  review          String?
+  coffee          Quality?     @default(NONE)
+  food            Quality?     @default(NONE)
+  powerpoints     Powerpoints? @default(NONE)
+  wifi            Wifi?        @default(NONE)
+  placeId         String
+  place           PlaceDetails @relation(fields: [placeId], references: [placeId], onDelete: Cascade)
+	createdAt				DateTime		 @default(now())
+	updatedAt				DateTime			@updatedAt
 }
 
 model PlaceDetails {
-	placeId            String    @id 
-	name String?
-	formattedAddress String?
-	formattedPhoneNumber String?
-	website String?
-	openingHours Json?
-	geometry Json?
+  placeId              String   @id
+  name                 String?
+  formattedAddress     String?
+  formattedPhoneNumber String?
+  website              String?
+  openingHours         Json?
+  geometry             Json?
+  reviews              Review[]
+}
+
+enum Status {
+  DRAFT
+  PUBLISHED
 }
 
 enum Quality {
-	NONE
-	POOR
-	OKAY
-	GOOD
+  NONE
+  POOR
+  OKAY
+  GOOD
 }
+
 enum Powerpoints {
-	NONE
-	LIMITED
-	MANY
+  NONE
+  LIMITED
+  MANY
 }
 
 enum Wifi {
-	NONE
-	WEAK
-	STRONG
+  NONE
+  WEAK
+  STRONG
 }

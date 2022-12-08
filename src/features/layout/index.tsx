@@ -17,10 +17,13 @@ export const IconToggleDarkMode = () => {
   );
 };
 
-export const Logo = () => (
+type LogoProps = {
+  withText: boolean;
+};
+export const Logo = ({ withText = true }: LogoProps) => (
   <div className="flex items-center gap-2 ">
     <GiCoffeePot className="h-6 w-6" />
-    <Text className="font-serif text-lg font-bold">copper</Text>
+    {withText && <Text className="font-serif text-lg font-bold">copper</Text>}
   </div>
 );
 

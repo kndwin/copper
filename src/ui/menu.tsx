@@ -1,6 +1,5 @@
-// import { styled } from "classname-variants/react";
 import * as P from "@radix-ui/react-dropdown-menu";
-import { styled, VariantPropsOf } from "classname-variants/react";
+import { styled, type VariantPropsOf } from "classname-variants/react";
 import cx from "classnames";
 
 const Root = ({ children, ...props }: P.DropdownMenuProps) => {
@@ -18,10 +17,12 @@ const StyledContent = styled(P.Content, {
   ),
   variants: {
     color: {
-      sand: "bg-sand-2",
+      sand: "bg-sand-3 shadow",
     },
     size: {
-      md: "w-48 rounded-lg bg-sand-2 px-1.5 py-1 md:w-56",
+      fit: "w-fit rounded p-1.5",
+      sm: "w-32 p-1.5 rounded",
+      md: "w-48 rounded-lg p-1.5",
     },
   },
   defaultVariants: {
@@ -43,4 +44,5 @@ const Content = ({
 export const Menu = Object.assign(Root, {
   Trigger,
   Content,
+  Item: P.Item,
 });

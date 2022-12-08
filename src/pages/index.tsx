@@ -16,6 +16,10 @@ const HomePage: NextPage = () => {
         <div className="mx-auto max-w-[60em] px-2">
           <header className="flex items-center justify-between gap-2 border-b border-sand-6 p-4">
             <Logo />
+            <div className="mx-auto flex w-fit items-center gap-2 ">
+              <MenuFilter />
+              <InputSearch />
+            </div>
             <div className="flex items-center gap-4 ">
               <IconToggleDarkMode />
               <SignInButton />
@@ -23,11 +27,6 @@ const HomePage: NextPage = () => {
           </header>
 
           <main className="container mx-auto flex h-full flex-col px-8">
-            <div className="mx-auto mt-8 flex w-fit items-center gap-2 ">
-              <MenuFilter />
-              <InputSearch />
-            </div>
-
             <GridCafes />
           </main>
         </div>

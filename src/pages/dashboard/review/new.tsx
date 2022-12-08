@@ -1,15 +1,24 @@
 import { Page } from "~/features/layout";
 import { type NextPageWithLayout } from "~/types/next-app";
-import { NewReview, NewReviewHeader } from "~/features/review/NewReview";
+import { ReviewContent, ReviewHeader } from "~/features/review";
+import { useReviewFormStore } from "~/features/review/Content/useReviewFormStore";
+import { useEffect } from "react";
 
 const NewReviewPage: NextPageWithLayout = () => {
-  return <NewReview />;
-};
-export default NewReviewPage;
+  const reset = useReviewFormStore((s) => s.reset);
 
-NewReviewPage.getLayout = (page) => (
-  <Page>
-    <NewReviewHeader />
-    <main className="p-4">{page}</main>
-  </Page>
-);
+  useEffect(() => {
+    reset();
+  }, [reset]);
+
+  return (
+    <Page>
+      <ReviewHeader />
+      <main className="p-4">
+        <ReviewContent />
+      </main>
+    </Page>
+  );
+};
+
+export default NewReviewPage;

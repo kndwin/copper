@@ -1,7 +1,7 @@
 import { Text } from "~/ui";
 import { styled } from "classname-variants/react";
 
-export const SLabel = styled((props) => <Text as="label" {...props} />, {
+export const Label = styled((props) => <Text as="label" {...props} />, {
   base: "font-bold",
   variants: {
     size: {
@@ -14,7 +14,7 @@ export const SLabel = styled((props) => <Text as="label" {...props} />, {
   },
 });
 
-export const SBox = styled("div", {
+export const Box = styled("div", {
   base: "",
   variants: {
     variant: {
@@ -24,5 +24,18 @@ export const SBox = styled("div", {
   },
   defaultVariants: {
     variant: "flex",
+  },
+});
+
+export const Skeleton = styled("div", {
+  base: "animate-pulse bg-sand-6",
+  variants: {
+    variant: {
+      box: "rounded",
+      circle: "rounded-full",
+    },
+  },
+  defaultVariants: {
+    variant: "box",
   },
 });

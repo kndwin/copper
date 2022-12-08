@@ -20,6 +20,7 @@ export const AutocompletePlace = ({
 }: TAutocompletePlaceProps) => {
   const [debouncedInput, setDebouncedInput] = useDebouncedState("", 200);
   const [openContent, setOpenContent] = useState(false);
+  const [isInputFocused, setIsInputFocused] = useState(false);
   const queryAutocomplete = trpc.places.getAutocomplete.useQuery(
     {
       text: debouncedInput,
@@ -27,7 +28,7 @@ export const AutocompletePlace = ({
     {
       enabled: debouncedInput.length > 0,
       onSuccess: () => {
-        setOpenContent(true);
+        isInputFocused && setOpenContent(true);
       },
     }
   );
@@ -43,6 +44,8 @@ export const AutocompletePlace = ({
     <Popover open={openContent} onOpenChange={(open) => setOpenContent(open)}>
       <Popover.Anchor className="flex gap-4">
         <Input
+          onFocus={() => setIsInputFocused(true)}
+          onBlur={() => setIsInputFocused(false)}
           defaultValue={debouncedInput}
           onChange={(e: ChangeEvent<HTMLInputElement>) =>
             setDebouncedInput(e.target.value)

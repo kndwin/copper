@@ -3,6 +3,9 @@ import { styled } from "classname-variants/react";
 export const Button = styled("button", {
   base: "flex items-center rounded",
   variants: {
+    disabled: {
+      true: "",
+    },
     variant: {
       default: "",
       filled: "",
@@ -10,6 +13,7 @@ export const Button = styled("button", {
     },
     color: {
       sand: "bg-sand-4 hover:bg-sand-6 outline-sand-8",
+      red: "bg-red-4 hover:bg-red-6 outline-red-8",
     },
     size: {
       md: "px-2 py-1 gap-2",
@@ -17,6 +21,13 @@ export const Button = styled("button", {
     },
   },
   compoundVariants: [
+    {
+      variants: {
+        color: "sand",
+        disabled: true,
+      },
+      className: "bg-sand-2",
+    },
     {
       variants: {
         color: "sand",
