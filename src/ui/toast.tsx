@@ -15,8 +15,7 @@ import {
 const ToastProvider = ToastPrimitive.ToastProvider;
 const ToastRoot = styled(ToastPrimitive.Root, {
   base: cx(
-    "z-50 fixed w-60 p-2",
-    "rounded text-sand-12",
+    "z-50 fixed w-60 p-3  rounded text-sand-12",
     "radix-state-open:animate-in radix-state-open:slide-in-from-bottom",
     "radix-state-closed:animate-out radix-state-closed:slide-out-from-top",
     "radix-swipe-end:animate-out radix-swipe-end:slide-out-from-left",
@@ -34,7 +33,7 @@ const ToastRoot = styled(ToastPrimitive.Root, {
     },
     colors: {
       success: cx(
-        "bg-sand-1 border border-sand-6",
+        "bg-sand-2 border border-sand-6",
         "focus-visible:ring-sand-5 focus-visible:ring-opacity-75"
       ),
       error: cx(
@@ -49,7 +48,7 @@ const ToastRoot = styled(ToastPrimitive.Root, {
   },
   defaultVariants: {
     colors: "success",
-    position: "topRight",
+    position: "bottomRight",
   },
 });
 const ToastTitle = ToastPrimitive.Title;
@@ -96,13 +95,13 @@ const ToastMessages = () => {
 
   const toastDecorators = match(toast.type)
     .with("success", () => ({
-      icon: <HiCheckCircle className="fill-green-300" size={24} />,
+      icon: <HiCheckCircle className="fill-grass-12" size={24} />,
     }))
     .with("error", () => ({
-      icon: <HiXCircle className="fill-red-300" size={24} />,
+      icon: <HiXCircle className="fill-red-12" size={24} />,
     }))
     .with("info", () => ({
-      icon: <HiInformationCircle className="fill-stone-300" size={24} />,
+      icon: <HiInformationCircle className="fill-sand-12" size={24} />,
     }))
     .exhaustive();
 
@@ -110,20 +109,18 @@ const ToastMessages = () => {
     <>
       <Toast open={toast.open} colors={toast.type} onOpenChange={onOpenChange}>
         <div className="flex w-60 pr-2">
-          <Toast.Close className="absolute top-2 right-2">
+          <Toast.Close className="absolute top-3 right-3">
             <HiX />
           </Toast.Close>
 
           <div className="flex flex-col gap-2">
             <div className="flex items-center gap-2">
               {toastDecorators.icon}
-              <Text as={ToastTitle} className="text-sm font-bold">
+              <Text as={ToastTitle} className="text-base font-bold">
                 {toast.title}
               </Text>
             </div>
-            <Text as={ToastDescription} className="mb-4">
-              {toast.description}
-            </Text>
+            <Text as={ToastDescription}>{toast.description}</Text>
           </div>
         </div>
       </Toast>

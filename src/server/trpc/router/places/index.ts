@@ -53,7 +53,6 @@ export const placesRouter = router({
       })
     )
     .query(async ({ ctx, input }) => {
-      console.log("hitting place");
       let placeDetailsResponse: PlaceDetails | null = null;
 
       const { prisma } = ctx;
@@ -91,17 +90,13 @@ export const placesRouter = router({
     const places = await ctx.prisma.placeDetails.findMany({
       where: {
         reviews: {
-          some: {},
-        },
-        AND: {
-          reviews: {
-            every: {
-              status: "PUBLISHED",
-            },
+          none: {
+            status: "DRAFT",
           },
         },
       },
     });
+    console.log({ places });
     return places;
   }),
 });

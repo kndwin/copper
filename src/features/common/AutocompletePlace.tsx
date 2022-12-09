@@ -18,7 +18,7 @@ type TAutocompletePlaceProps = {
 export const AutocompletePlace = ({
   onSelectPrediction,
 }: TAutocompletePlaceProps) => {
-  const [debouncedInput, setDebouncedInput] = useDebouncedState("", 200);
+  const [debouncedInput, setDebouncedInput] = useDebouncedState("", 500);
   const [openContent, setOpenContent] = useState(false);
   const [isInputFocused, setIsInputFocused] = useState(false);
   const queryAutocomplete = trpc.places.getAutocomplete.useQuery(

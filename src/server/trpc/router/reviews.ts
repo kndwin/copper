@@ -13,18 +13,39 @@ export const reviewRouter = router({
   createOne: publicProcedure
     .input(ReviewModelInput.omit({ id: true }))
     .mutation(async ({ ctx, input }) => {
+      const { placeId, ...rest } = input;
+      const userId = ctx.session?.user?.id as string;
       const newReview = await ctx.prisma.review.create({
-        data: { ...input, userId: ctx.session?.user?.id as string },
+        data: {
+          ...rest,
+          place: {
+            connect: {
+              placeId,
+            },
+          },
+          user: {
+            connect: {
+              id: userId,
+            },
+          },
+        },
       });
       return newReview;
     }),
   updateOne: publicProcedure
     .input(ReviewModelInput)
     .mutation(async ({ ctx, input }) => {
-      const { id, ...data } = input;
+      const { id, placeId, ...rest } = input;
       const updatedReview = await ctx.prisma.review.update({
         where: { id },
-        data,
+        data: {
+          ...rest,
+          place: {
+            connect: {
+              placeId,
+            },
+          },
+        },
       });
       return updatedReview;
     }),

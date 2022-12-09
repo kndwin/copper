@@ -6,24 +6,33 @@ import { useRouter } from "next/router";
 import { useReviewFormStore } from "~/features/review/Content/useReviewFormStore";
 import { CafeDetailsLoadingSkeleton } from "~/features/review/Content/SearchCafe";
 import { Skeleton } from "~/ui";
+import { useEffect } from "react";
 
 const UpdateReviewPage: NextPageWithLayout = () => {
   const { query } = useRouter();
   const setAllFormState = useReviewFormStore((s) => s.setAllFormState);
+  const setMode = useReviewFormStore((s) => s.setMode);
   const utils = trpc.useContext();
   const reviewQuery = trpc.review.getReviewFromId.useQuery(
-    { reviewId: query?.id as string },
+    { id: query?.id as string },
     {
       enabled: Boolean(query?.id),
       onSuccess: (data) => {
-        const { userId, place, ...rest } = data;
-        console.log("setting form");
-        setAllFormState(rest);
-        console.log("setting place");
-        utils.places.getPlaceDetails.setData((prevData) => place);
+        if (data) {
+          const { place, ...rest } = data;
+          setAllFormState(rest);
+          utils.places.getPlaceDetails.setData(() => place);
+        }
       },
     }
   );
+
+  useEffect(() => {
+    if (query?.id) {
+      setMode("update");
+    }
+  }, [query]);
+
   return (
     <Page>
       <ReviewHeader />

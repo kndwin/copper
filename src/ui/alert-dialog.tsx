@@ -1,9 +1,11 @@
-import { Fragment, ReactNode } from "react";
+import { Fragment, ReactNode, useState } from "react";
 import { styled } from "classname-variants/react";
 import { atom, useAtom } from "jotai";
 import * as AlertDialogPrimitive from "@radix-ui/react-alert-dialog";
 import cx from "classnames";
 import { Transition } from "@headlessui/react";
+import { Text } from "./text";
+import { Button } from "./button";
 
 const AlertDialogRoot = AlertDialogPrimitive.Root;
 const AlertDialogTrigger = AlertDialogPrimitive.Trigger;
@@ -13,18 +15,20 @@ const StyledAlertDialogOverlay = styled(AlertDialogPrimitive.Overlay, {
 });
 const StyledAlertDialogContent = styled(AlertDialogPrimitive.Content, {
   base: cx(
-    "fixed z-50 drop-shadow-lg bg-[#282828] border border-stone-500",
+    "fixed z-50 drop-shadow-lg bg-sand-3 border border-stone-500",
     "w-[95vw] max-w-md rounded-lg p-4 md:w-full",
     "top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%]",
     "focus:outline-none focus-visible:ring-2",
-    "focus-visible:ring-stone-500 focus-visible:ring-opacity-75"
+    "focus-visible:ring-sand-6 focus-visible:ring-opacity-75"
   ),
   variants: {},
 });
+
 const AlertDialogTitle = styled(AlertDialogPrimitive.Title, {
   base: "text-lg text-stone-300 font-bold",
   variants: {},
 });
+
 const AlertDialogDescription = styled(AlertDialogPrimitive.Description, {
   base: "text-sm text-stone-300",
   variants: {},
@@ -129,26 +133,36 @@ export const useAlert = () => {
 
 export const AlertDialogMessages = () => {
   const { alert, onOpenChange } = useAlert();
+  const [loading, setLoading] = useState(false);
   return (
     <AlertDialogContentControlled
       open={alert.open}
       onOpenChange={onOpenChange}
       onConfirm={alert.onConfirm}
     >
-      <AlertDialog.Title>{alert.title}</AlertDialog.Title>
-      <AlertDialog.Description>{alert.description}</AlertDialog.Description>
+      <Text as={AlertDialog.Title}>{alert.title}</Text>
+      <Text as={AlertDialog.Description}>{alert.description}</Text>
       <div className="mt-4 flex items-center justify-end gap-2">
-        <AlertDialog.Cancel onClick={() => onOpenChange(false)}>
+        <Button
+          as={AlertDialogPrimitive.Cancel}
+          onClick={() => onOpenChange(false)}
+        >
           Cancel
-        </AlertDialog.Cancel>
-        <AlertDialog.Action
+        </Button>
+        <Button
+          as={AlertDialogPrimitive.Action}
+          color="red"
+          loading={loading}
           onClick={async () => {
+            setLoading(true);
             await alert.onConfirm();
+            setLoading(false);
             onOpenChange(false);
           }}
+          className="font-bold"
         >
           Confirm
-        </AlertDialog.Action>
+        </Button>
       </div>
     </AlertDialogContentControlled>
   );

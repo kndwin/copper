@@ -15,10 +15,6 @@ export const SearchCafe = () => {
     { placeId },
     {
       enabled: placeId.length > 0,
-      onSuccess: (data) => {
-        console.log("place query finished");
-        console.log({ data });
-      },
     }
   );
 

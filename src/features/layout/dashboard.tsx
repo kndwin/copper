@@ -6,6 +6,7 @@ import { useRouter } from "next/router";
 
 import { Button } from "~/ui";
 import { Logo, IconToggleDarkMode, PopoverProfile } from "~/features/layout";
+import { match } from "ts-pattern";
 
 export const DashboardLayout = (page: ReactNode) => {
   return (
@@ -53,9 +54,15 @@ export const getDashboardLayout = DashboardLayout;
 
 const navOptions = [
   {
+    label: "Hit List",
+    icon: <HiOutlineMenuAlt2 />,
+    href: "/dashboard/hit-list",
+    hide: true,
+  },
+  {
     label: "Reviews",
     icon: <HiOutlineMenuAlt2 />,
-    href: "/dashboard",
+    href: "/dashboard/review",
   },
   {
     label: "Settings",
@@ -69,20 +76,32 @@ const AsideNavbar = () => {
 
   return (
     <aside className="flex w-60 flex-col gap-2 py-4">
-      {navOptions.map((option) => (
-        <Button
-          key={option.href}
-          as={Link}
-          href={option.href}
-          size="lg"
-          className={
-            router.pathname !== option.href ? "bg-transparent" : "bg-sand-5"
-          }
-        >
-          {option.icon}
-          {option.label}
-        </Button>
-      ))}
+      {navOptions.map((option) => {
+        const selected = router.pathname == option.href;
+        const className = match({ selected, hidden: Boolean(option.hide) })
+          .with(
+            { hidden: true },
+            () =>
+              "text-sand-8 bg-transparent cursor-default hover:bg-transparent"
+          )
+          .with({ selected: true, hidden: false }, () => "bg-sand-5")
+          .with({ selected: false }, () => "bg-transparent")
+          .otherwise(() => "");
+
+        return (
+          <Button
+            key={option.href}
+            as={Link}
+            href={option.hide ? "#" : option.href}
+            size="lg"
+            disabled={option.hide}
+            className={className}
+          >
+            {option.icon}
+            {option.label}
+          </Button>
+        );
+      })}
     </aside>
   );
 };

@@ -1,6 +1,5 @@
 import { type ChangeEvent, useState } from "react";
 import Link from "next/link";
-import { AiOutlineLoading } from "react-icons/ai";
 import { Status } from "@prisma/client";
 
 import { Header, IconToggleDarkMode } from "~/features/layout";
@@ -8,11 +7,12 @@ import { HiArrowLeft, HiOutlineSaveAs, HiX } from "react-icons/hi";
 import { Text, Button, Tag, Input, Menu, useToast, useAlert } from "~/ui";
 
 import { useReviewFormStore } from "./useReviewFormStore";
-import { useSession } from "next-auth/react";
 import { trpc } from "~/utils/trpc";
 import { useRouter } from "next/router";
+import { match } from "ts-pattern";
 
 export const ReviewHeader = () => {
+  const mode = useReviewFormStore((s) => s.mode);
   return (
     <Header>
       <div className="flex items-center gap-6">
@@ -26,30 +26,10 @@ export const ReviewHeader = () => {
       </div>
       <div className="flex items-center gap-4">
         <IconToggleDarkMode />
-        <AlertTest />
-        <ButtonDelete />
+        {mode === "update" && <ButtonDelete />}
         <ButtonSave />
       </div>
     </Header>
-  );
-};
-
-const AlertTest = () => {
-  const { send } = useAlert();
-  return (
-    <Button
-      onClick={() =>
-        send({
-          title: "Are you sure",
-          description: "Do you want to this?",
-          onConfirm: () => {
-            console.log("swag yolo");
-          },
-        })
-      }
-    >
-      Test
-    </Button>
   );
 };
 
@@ -57,23 +37,21 @@ const ButtonDelete = () => {
   const formData = useReviewFormStore((s) => s.formData);
   const utils = trpc.useContext();
   const router = useRouter();
-  const { send } = useToast();
-  const deleteOneMutation = trpc.review.deleteOne.useMutation({
+  const { send: sendToast } = useToast();
+  const { send: sendAlert } = useAlert();
+
+  const { isLoading, mutateAsync } = trpc.review.deleteOne.useMutation({
     onSuccess: () => {
       utils.places.getPlacesWithReviews.invalidate();
     },
   });
 
-  const isDeleteLoading = deleteOneMutation.isLoading;
-
   const handleDeleteReview = async () => {
-    const deletedReview = await deleteOneMutation.mutateAsync({
-      where: {
-        id: formData.id,
-      },
+    const deletedReview = await mutateAsync({
+      id: formData.id,
     });
 
-    send({
+    sendToast({
       description: `Sucessfully deleted a review: ${deletedReview.title}`,
       title: `Success`,
       type: "success",
@@ -81,26 +59,28 @@ const ButtonDelete = () => {
 
     router.push("/dashboard");
   };
+
   return (
     <Button
       color="red"
-      size="lg"
-      onClick={handleDeleteReview}
-      disabled={isDeleteLoading}
+      onClick={() =>
+        sendAlert({
+          title: "Are you sure",
+          description: "Do you want to this?",
+          onConfirm: handleDeleteReview,
+        })
+      }
+      leftIcon={<HiX />}
+      loading={isLoading}
     >
-      {isDeleteLoading ? (
-        <AiOutlineLoading className="h-4 w-4 animate-spin" />
-      ) : (
-        <HiX />
-      )}
       Delete
     </Button>
   );
 };
 const ButtonSave = () => {
   const formData = useReviewFormStore((s) => s.formData);
+  const mode = useReviewFormStore((s) => s.mode);
   const utils = trpc.useContext();
-  const { data } = useSession();
   const { send } = useToast();
 
   const createOneMutation = trpc.review.createOne.useMutation({
@@ -119,40 +99,32 @@ const ButtonSave = () => {
     createOneMutation.isLoading || updateOneMutation?.isLoading;
 
   const handleSaveReview = async () => {
-    const isReviewNew = formData.id === "";
-    if (isReviewNew) {
-      // TODO(knd): Think about better validation framework
-      if (!data?.user?.id) {
-        throw Error("No user is found");
-      }
-
-      // TODO(knd): Think about better validation framework
-      if (formData.placeId.length === 0) {
-        throw Error("No place is found");
-      }
-      const newReview = await createOneMutation.mutateAsync(formData);
-      send({
-        description: `Sucessfully created a new review: ${newReview.title}`,
-        title: `Success`,
-        type: "success",
-      });
-    } else {
-      const updatedReview = await updateOneMutation.mutateAsync(formData);
-      send({
-        description: `Sucessfully updated a review: ${updatedReview.title}`,
-        title: `Success`,
-        type: "success",
-      });
-    }
+    match(mode)
+      .with("new", async () => {
+        const newReview = await createOneMutation.mutateAsync(formData);
+        send({
+          description: `Sucessfully created a new review: ${newReview.title}`,
+          title: `Success`,
+          type: "success",
+        });
+      })
+      .with("update", async () => {
+        const updatedReview = await updateOneMutation.mutateAsync(formData);
+        send({
+          description: `Sucessfully updated a review: ${updatedReview.title}`,
+          title: `Success`,
+          type: "success",
+        });
+      })
+      .exhaustive();
   };
 
   return (
-    <Button size="lg" onClick={handleSaveReview} disabled={isSaveLoading}>
-      {isSaveLoading ? (
-        <AiOutlineLoading className="h-4 w-4 animate-spin" />
-      ) : (
-        <HiOutlineSaveAs />
-      )}
+    <Button
+      onClick={handleSaveReview}
+      loading={isSaveLoading}
+      leftIcon={<HiOutlineSaveAs />}
+    >
       Save
     </Button>
   );

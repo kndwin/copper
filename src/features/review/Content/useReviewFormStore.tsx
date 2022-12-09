@@ -5,8 +5,10 @@ import { immer } from "zustand/middleware/immer";
 type State = {
   formData: Omit<Review, "userId" | "createdAt" | "updatedAt">;
   errors: Record<keyof State["formData"], ErrorMessage> | Record<string, never>;
+  mode: Mode;
 };
 
+type Mode = "new" | "update";
 type ErrorMessage =
   | {
       message: string;
@@ -15,6 +17,7 @@ type ErrorMessage =
 
 type Actions = {
   reset: () => void;
+  setMode: (mode: Mode) => void;
   setFormState: <O extends keyof State["formData"]>(
     key: keyof State["formData"],
     value: State["formData"][O]
@@ -29,6 +32,7 @@ type Actions = {
 };
 
 const initState: State = {
+  mode: "new",
   errors: {},
   formData: {
     id: "",
@@ -60,6 +64,10 @@ export const useReviewFormStore = create(
         state.errors[key] = value;
       });
     },
+    setMode: (mode) =>
+      set((state) => {
+        state.mode = mode;
+      }),
     resetFormError: (key) => {
       set((state) => {
         state.errors[key] = undefined;

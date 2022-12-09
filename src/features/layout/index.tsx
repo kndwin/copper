@@ -18,10 +18,10 @@ export const IconToggleDarkMode = () => {
 };
 
 type LogoProps = {
-  withText: boolean;
+  withText?: boolean;
 };
 export const Logo = ({ withText = true }: LogoProps) => (
-  <div className="flex items-center gap-2 ">
+  <div className="flex items-center gap-3 ">
     <GiCoffeePot className="h-6 w-6" />
     {withText && <Text className="font-serif text-lg font-bold">copper</Text>}
   </div>
