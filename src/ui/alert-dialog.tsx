@@ -1,4 +1,4 @@
-import { Fragment, ReactNode, useState } from "react";
+import { Fragment, type ReactNode, useState } from "react";
 import { styled } from "classname-variants/react";
 import { atom, useAtom } from "jotai";
 import * as AlertDialogPrimitive from "@radix-ui/react-alert-dialog";

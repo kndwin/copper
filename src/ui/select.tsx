@@ -1,6 +1,6 @@
 import * as P from "@radix-ui/react-select";
 import { forwardRef } from "react";
-import { styled, VariantPropsOf } from "classname-variants/react";
+import { styled, type VariantPropsOf } from "classname-variants/react";
 import cx from "classnames";
 import { HiCheck, HiArrowUp, HiArrowDown } from "react-icons/hi";
 

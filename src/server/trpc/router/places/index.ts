@@ -88,15 +88,23 @@ export const placesRouter = router({
     }),
   getPlacesWithReviews: publicProcedure.query(async ({ ctx }) => {
     const places = await ctx.prisma.placeDetails.findMany({
+      include: {
+        _count: {
+          select: {
+            reviews: true,
+          },
+        },
+      },
       where: {
         reviews: {
-          none: {
-            status: "DRAFT",
+          some: {
+            status: {
+              equals: "PUBLISHED",
+            },
           },
         },
       },
     });
-    console.log({ places });
     return places;
   }),
 });

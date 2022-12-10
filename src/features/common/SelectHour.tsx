@@ -34,7 +34,7 @@ type TSelectHoursProps = {
 export const SelectHours = (props: TSelectHoursProps) => {
   return (
     <Select defaultValue={`${props.defaultHour}`}>
-      <Select.Trigger size="lg">
+      <Select.Trigger>
         <Select.Value placeholder={props.placeholder} />
         <Select.Icon>
           <HiOutlineChevronDown />

@@ -1,9 +1,9 @@
 import { type ChangeEvent } from "react";
 import { Powerpoints, Quality, Wifi } from "@prisma/client";
 import { Button, Input } from "~/ui";
+import { Box, Label } from "~/features/common";
 
 import { SearchCafe } from "./SearchCafe";
-import { Box, Label } from "./common";
 import { useReviewFormStore } from "./useReviewFormStore";
 
 export * from "./Header";

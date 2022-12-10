@@ -7,8 +7,6 @@ export const ReviewList = () => {
   const reviewQuery = trpc.review.getReviewFromUser.useQuery();
   const hasReviews = Number(reviewQuery.data?.length) > 0;
 
-  console.log({ reviewQuery });
-
   return (
     <>
       <div className="flex justify-between">

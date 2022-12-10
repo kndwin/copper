@@ -1,6 +1,10 @@
 import { Text } from "~/ui";
 import { styled } from "classname-variants/react";
 
+export * from "./SelectHour";
+export * from "./AutocompletePlace";
+export * from "./TableOpeningHours";
+
 export const Label = styled((props) => <Text as="label" {...props} />, {
   base: "font-bold",
   variants: {

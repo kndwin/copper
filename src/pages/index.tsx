@@ -16,7 +16,7 @@ const HomePage: NextPage = () => {
         <div className="mx-auto max-w-[60em] px-2">
           <header className="flex items-center justify-between gap-2 border-b border-sand-6 p-4">
             <Logo />
-            <div className="mx-auto flex w-fit items-center gap-2 ">
+            <div className="mx-auto flex w-fit items-center gap-4">
               <MenuFilter />
               <InputSearch />
             </div>

@@ -101,7 +101,7 @@ const SFilterContainer = styled("div", {
 });
 
 const SOption = styled("div", {
-  base: "flex items-center justify-center rounded p-2 bg-sand-3 hover:bg-sand-4",
+  base: "flex items-center justify-center rounded p-1 bg-sand-3 hover:bg-sand-4",
   variants: {
     selected: {
       true: "bg-sand-6",

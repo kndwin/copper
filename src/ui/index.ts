@@ -9,3 +9,4 @@ export * from "./tag";
 export * from "./skeleton";
 export * from "./toast";
 export * from "./alert-dialog";
+export * from "./dialog";

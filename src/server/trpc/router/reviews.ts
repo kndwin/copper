@@ -1,5 +1,4 @@
-// import { z } from "zod";
-
+import { z } from "zod";
 import { router, publicProcedure } from "~/server/trpc/trpc";
 import { ReviewModel } from "~/types/prismaZod";
 
@@ -75,4 +74,13 @@ export const reviewRouter = router({
       },
     });
   }),
+  getReviewFromPlace: publicProcedure
+    .input(z.object({ placeId: z.string() }))
+    .query(async ({ ctx, input }) => {
+      return ctx.prisma.review.findMany({
+        where: {
+          placeId: input.placeId,
+        },
+      });
+    }),
 });
