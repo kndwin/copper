@@ -78,6 +78,16 @@ export const reviewRouter = router({
     .input(z.object({ placeId: z.string() }))
     .query(async ({ ctx, input }) => {
       return ctx.prisma.review.findMany({
+        include: {
+          user: {
+            select: {
+              email: true,
+              image: true,
+              id: true,
+              name: true,
+            },
+          },
+        },
         where: {
           placeId: input.placeId,
         },

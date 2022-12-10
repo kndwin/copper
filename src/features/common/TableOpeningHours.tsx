@@ -8,26 +8,26 @@ type TTableOpeningHoursProps = {
 export const TableOpeningHours = ({ periods }: TTableOpeningHoursProps) => {
   return (
     <div className="w-full overflow-hidden rounded border border-sand-8">
-      <table className="w-full  table-auto">
+      <table className="w-full table-auto">
         <thead>
           <tr>
-            <SCell as="th" className="p-2" align="left">
+            <Cell as="th" align="left" size="lg">
               Day
-            </SCell>
-            <SCell as="th" className="p-2" align="left">
+            </Cell>
+            <Cell as="th" align="left" size="lg">
               Open
-            </SCell>
-            <SCell as="th" className="p-2" align="left">
+            </Cell>
+            <Cell as="th" align="left" size="lg">
               Close
-            </SCell>
+            </Cell>
           </tr>
         </thead>
         <tbody>
           {periods?.map((period, index) => (
             <tr key={index}>
-              <SCell>{getDayName(period.open.day)}</SCell>
-              <SCell>{getHourName(period.open?.time)}</SCell>
-              <SCell>{getHourName(period.close?.time)}</SCell>
+              <Cell>{getDayName(period.open.day)}</Cell>
+              <Cell>{getHourName(period.open?.time)}</Cell>
+              <Cell>{getHourName(period.close?.time)}</Cell>
             </tr>
           ))}
         </tbody>
@@ -36,9 +36,17 @@ export const TableOpeningHours = ({ periods }: TTableOpeningHoursProps) => {
   );
 };
 
-const SCell = styled("td", {
-  base: "p-2",
-  variants: {},
+const Cell = styled("td", {
+  base: "py-2 px-3",
+  variants: {
+    size: {
+      md: "",
+      lg: "p-2 text-lg",
+    },
+  },
+  defaultVariants: {
+    size: "md",
+  },
 });
 
 const getDayName = (day: number) => {
@@ -55,6 +63,7 @@ const getDayName = (day: number) => {
 };
 
 // input: "0500"
+// output: "5:00 AM"
 const getHourName = (input?: string) => {
   if (!Boolean(input)) {
     return "N/A";

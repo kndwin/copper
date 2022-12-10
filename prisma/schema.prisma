@@ -88,10 +88,10 @@ model Review {
   socialFacebook  String?
   socialInstagram String?
   review          String?
-  coffee          Quality?     @default(NONE)
-  food            Quality?     @default(NONE)
-  powerpoints     Powerpoints? @default(NONE)
-  wifi            Wifi?        @default(NONE)
+  coffee          Quality     @default(NONE)
+  food            Quality     @default(NONE)
+  powerpoints     Powerpoints @default(NONE)
+  wifi            Wifi        @default(NONE)
   placeId         String
   place           PlaceDetails @relation(fields: [placeId], references: [placeId], onDelete: Cascade)
 	createdAt				DateTime		 @default(now())

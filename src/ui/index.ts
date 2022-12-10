@@ -10,3 +10,4 @@ export * from "./skeleton";
 export * from "./toast";
 export * from "./alert-dialog";
 export * from "./dialog";
+export * from "./collapsible";

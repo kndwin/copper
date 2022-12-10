@@ -12,3 +12,18 @@ export const getInitials = (name?: string | null) => {
   }
   return initials;
 };
+
+export const getFirstName = (name?: string | null) => {
+  if (typeof name === "undefined" || name === null) {
+    return "";
+  }
+  const words = name.split(" ");
+  let firstName = "";
+
+  if (words.length === 2) {
+    firstName = words[0] as string;
+  } else if (words.length === 1) {
+    firstName = name;
+  }
+  return firstName;
+};

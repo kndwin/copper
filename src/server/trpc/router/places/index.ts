@@ -14,12 +14,12 @@ import { router, publicProcedure } from "~/server/trpc/trpc";
 const client = new Client({});
 
 export type TPlaceDetails = Omit<PlaceDetails, "openingHours" | "geometry"> & {
-  openingHours?: OpeningPeriod[];
+  openingHours: OpeningPeriod[];
   geometry: AddressGeometry;
 };
 
 type TPlaceDetailsInput = Omit<PlaceDetails, "openingHours" | "geometry"> & {
-  openingHours?: Prisma.JsonArray;
+  openingHours: Prisma.JsonArray;
   geometry: Prisma.JsonObject;
 };
 
@@ -53,7 +53,7 @@ export const placesRouter = router({
       })
     )
     .query(async ({ ctx, input }) => {
-      let placeDetailsResponse: PlaceDetails | null = null;
+      let placeDetailsResponse: TPlaceDetails | null = null;
 
       const { prisma } = ctx;
 
@@ -64,7 +64,7 @@ export const placesRouter = router({
       });
 
       if (placeDetailsFromDB) {
-        placeDetailsResponse = placeDetailsFromDB;
+        placeDetailsResponse = placeDetailsFromDB as unknown as TPlaceDetails;
       } else {
         const result = await client.placeDetails({
           params: {
@@ -81,10 +81,10 @@ export const placesRouter = router({
           data: formattedPlaceDetails,
         });
 
-        placeDetailsResponse = newPlaceDetails;
+        placeDetailsResponse = newPlaceDetails as unknown as TPlaceDetails;
       }
 
-      return placeDetailsResponse as unknown as TPlaceDetails;
+      return placeDetailsResponse;
     }),
   getPlacesWithReviews: publicProcedure.query(async ({ ctx }) => {
     const places = await ctx.prisma.placeDetails.findMany({

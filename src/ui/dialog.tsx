@@ -13,7 +13,7 @@ const StyledDialogOverlay = styled(DialogPrimitive.Overlay, {
 });
 const StyledDialogContent = styled(DialogPrimitive.Content, {
   base: cx(
-    "fixed z-50 drop-shadow-lg bg-sand-3 border border-sand-9",
+    "fixed z-50 drop-shadow-lg bg-sand-3 border border-sand-9 overflow-hidden",
 
     "top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%]",
     "focus:outline-none focus-visible:ring-2",
@@ -21,8 +21,9 @@ const StyledDialogContent = styled(DialogPrimitive.Content, {
   ),
   variants: {
     size: {
-      md: "w-[95vw] max-w-md rounded-lg p-4 md:w-full",
-      lg: "w-[95vw] max-w-[60em] rounded-lg p-4 md:w-full",
+      md: "w-[95vw] max-w-md rounded-lg md:w-full",
+      lg: "w-[95vw] max-w-[60em] rounded-lg md:w-full",
+      xl: "w-[95vw] h-[95vh] max-w-[80em] rounded-lg md:w-full",
     },
   },
   defaultVariants: {
@@ -70,6 +71,7 @@ export const Dialog = Object.assign(DialogRoot, {
   Content: StyledDialogContent,
   Trigger: DialogTrigger,
   Title: DialogTitle,
+  Close: DialogPrimitive.Close,
   Description: DialogDescription,
   ContentControlled: DialogContentControlled,
 });
