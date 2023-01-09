@@ -6,7 +6,7 @@ import { SessionProvider } from "next-auth/react";
 import { ThemeProvider } from "next-themes";
 
 import { trpc } from "~/utils/trpc";
-import { Toast, AlertDialog } from "~/ui";
+import { Toast, AlertDialog, Tooltip } from "~/ui";
 
 type TCustomAppProps = AppProps & {
   Component: { getLayout: (page: ReactNode) => ReactNode };
@@ -24,9 +24,11 @@ const CustomApp = ({
     <SessionProvider session={session}>
       <ThemeProvider attribute="class">
         <Toast.Provider>
-          {getLayout(<Component {...pageProps} />)}
-          <AlertDialog.Messages />
-          <Toast.Messages />
+          <Tooltip.Provider>
+            {getLayout(<Component {...pageProps} />)}
+            <AlertDialog.Messages />
+            <Toast.Messages />
+          </Tooltip.Provider>
         </Toast.Provider>
       </ThemeProvider>
     </SessionProvider>

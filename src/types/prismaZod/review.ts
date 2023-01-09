@@ -18,6 +18,7 @@ export const ReviewModel = z.object({
   placeId: z.string(),
   createdAt: z.date(),
   updatedAt: z.date(),
+  recommend: z.boolean(),
 })
 
 export interface CompleteReview extends z.infer<typeof ReviewModel> {

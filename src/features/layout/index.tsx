@@ -53,7 +53,7 @@ export const SignInButton = () => {
         })
       }
     >
-      Leave a review
+      Sign In
     </Button>
   );
 };
@@ -63,3 +63,4 @@ export const SignOutButton = () => {
 };
 
 export * from "./dashboard";
+export * from "./page";

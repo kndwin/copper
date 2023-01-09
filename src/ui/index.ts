@@ -11,3 +11,7 @@ export * from "./toast";
 export * from "./alert-dialog";
 export * from "./dialog";
 export * from "./collapsible";
+export * from "./tooltip";
+
+// Charts
+export * from "./charts/bar";

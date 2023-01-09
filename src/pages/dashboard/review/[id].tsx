@@ -19,7 +19,7 @@ const UpdateReviewPage: NextPageWithLayout = () => {
       enabled: Boolean(query?.id),
       onSuccess: (data) => {
         if (data) {
-          const { place, ...rest } = data;
+          const { place, createdAt, updatedAt, ...rest } = data;
           setAllFormState(rest);
           utils.places.getPlaceDetails.setData(() => place);
         }

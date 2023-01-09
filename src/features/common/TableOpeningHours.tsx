@@ -7,22 +7,22 @@ type TTableOpeningHoursProps = {
 
 export const TableOpeningHours = ({ periods }: TTableOpeningHoursProps) => {
   return (
-    <div className="w-full overflow-hidden rounded border border-sand-8">
-      <table className="w-full table-auto">
-        <thead>
+    <div className="w-full overflow-hidden rounded-lg border border-sand-8 ">
+      <table className="w-full text-left text-sm text-sand-12">
+        <thead className="bg-tranparent border-b border-sand-8 text-xs uppercase text-sand-12">
           <tr>
-            <Cell as="th" align="left" size="lg">
+            <Cell scope="col" as="th" align="left" size="lg">
               Day
             </Cell>
-            <Cell as="th" align="left" size="lg">
+            <Cell scope="col" as="th" align="left" size="lg">
               Open
             </Cell>
-            <Cell as="th" align="left" size="lg">
+            <Cell scope="col" as="th" align="left" size="lg">
               Close
             </Cell>
           </tr>
         </thead>
-        <tbody>
+        <tbody className="bg-tranparent">
           {periods?.map((period, index) => (
             <tr key={index}>
               <Cell>{getDayName(period.open.day)}</Cell>
@@ -37,11 +37,11 @@ export const TableOpeningHours = ({ periods }: TTableOpeningHoursProps) => {
 };
 
 const Cell = styled("td", {
-  base: "py-2 px-3",
+  base: "py-3 px-4",
   variants: {
     size: {
       md: "",
-      lg: "p-2 text-lg",
+      lg: "text-sm",
     },
   },
   defaultVariants: {

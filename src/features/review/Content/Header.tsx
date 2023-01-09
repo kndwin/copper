@@ -1,10 +1,10 @@
 import { type ChangeEvent, useState } from "react";
-import Link from "next/link";
 import { Status } from "@prisma/client";
 
-import { Header, IconToggleDarkMode } from "~/features/layout";
-import { HiArrowLeft, HiOutlineSaveAs, HiX } from "react-icons/hi";
+import { Page, IconToggleDarkMode } from "~/features/layout";
+import { HiOutlineSaveAs, HiX } from "react-icons/hi";
 import { Text, Button, Tag, Input, Menu, useToast, useAlert } from "~/ui";
+import { BackButton } from "~/features/common/Header";
 
 import { useReviewFormStore } from "./useReviewFormStore";
 import { trpc } from "~/utils/trpc";
@@ -14,11 +14,9 @@ import { match } from "ts-pattern";
 export const ReviewHeader = () => {
   const mode = useReviewFormStore((s) => s.mode);
   return (
-    <Header>
+    <Page.Header>
       <div className="flex items-center gap-6">
-        <Link href="/dashboard">
-          <HiArrowLeft className="h-8 w-8 rounded-full bg-sand-4 p-2 hover:bg-sand-6" />
-        </Link>
+        <BackButton />
         <div className="flex items-center gap-4">
           <InputTitle />
           <TagStatus />
@@ -29,7 +27,7 @@ export const ReviewHeader = () => {
         {mode === "update" && <ButtonDelete />}
         <ButtonSave />
       </div>
-    </Header>
+    </Page.Header>
   );
 };
 
@@ -42,7 +40,7 @@ const ButtonDelete = () => {
 
   const { isLoading, mutateAsync } = trpc.review.deleteOne.useMutation({
     onSuccess: () => {
-      utils.places.getPlacesWithReviews.invalidate();
+      utils.places.getManyPlacesWithReviews.invalidate();
     },
   });
 
@@ -86,13 +84,13 @@ const ButtonSave = () => {
 
   const createOneMutation = trpc.review.createOne.useMutation({
     onSuccess: () => {
-      utils.places.getPlacesWithReviews.invalidate();
+      utils.places.getManyPlacesWithReviews.invalidate();
     },
   });
 
   const updateOneMutation = trpc.review.updateOne.useMutation({
     onSuccess: () => {
-      utils.places.getPlacesWithReviews.invalidate();
+      utils.places.getManyPlacesWithReviews.invalidate();
     },
   });
 

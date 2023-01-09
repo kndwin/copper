@@ -1,5 +1,5 @@
 import Head from "next/head";
-import { HiOutlineMenuAlt2, HiCog } from "react-icons/hi";
+import { HiOutlineMenuAlt2, HiCog, HiStar } from "react-icons/hi";
 import { type ReactNode } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -7,6 +7,7 @@ import { useRouter } from "next/router";
 import { Button } from "~/ui";
 import { Logo, IconToggleDarkMode, PopoverProfile } from "~/features/layout";
 import { match } from "ts-pattern";
+import { Page } from "~/features/layout";
 
 export const DashboardLayout = (page: ReactNode) => {
   return (
@@ -18,13 +19,13 @@ export const DashboardLayout = (page: ReactNode) => {
       </Head>
 
       <Page>
-        <Header>
+        <Page.Header>
           <Logo />
           <div className="flex items-center gap-2">
             <IconToggleDarkMode />
             <PopoverProfile />
           </div>
-        </Header>
+        </Page.Header>
         <div className="flex h-full flex-1">
           <AsideNavbar />
           <main className="w-full py-4 pl-12 pr-4">{page}</main>
@@ -34,30 +35,20 @@ export const DashboardLayout = (page: ReactNode) => {
   );
 };
 
-export const Page = ({ children }: { children: ReactNode }) => (
-  <div className="flex min-h-screen w-full bg-sand-2">
-    <div className="mx-auto flex h-full w-full max-w-[60em] flex-1 flex-col px-4">
-      {children}
-    </div>
-  </div>
-);
-
-export const Header = ({ children }: { children: ReactNode }) => {
-  return (
-    <header className="flex items-center justify-between gap-2 border-b border-sand-6 p-4">
-      {children}
-    </header>
-  );
-};
-
 export const getDashboardLayout = DashboardLayout;
 
-const navOptions = [
+type NavOption = {
+  label: string;
+  icon: ReactNode;
+  href: string;
+  hide?: boolean;
+};
+
+const navOptions: NavOption[] = [
   {
     label: "Hit List",
-    icon: <HiOutlineMenuAlt2 />,
-    href: "/dashboard/hit-list",
-    hide: true,
+    icon: <HiStar />,
+    href: "/dashboard/hitlist",
   },
   {
     label: "Reviews",
@@ -78,7 +69,7 @@ const AsideNavbar = () => {
     <aside className="flex w-60 flex-col gap-2 py-4">
       {navOptions.map((option) => {
         const selected = router.pathname == option.href;
-        const className = match({ selected, hidden: Boolean(option.hide) })
+        const className = match({ selected, hidden: Boolean(option?.hide) })
           .with(
             { hidden: true },
             () =>

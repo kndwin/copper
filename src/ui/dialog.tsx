@@ -21,9 +21,9 @@ const StyledDialogContent = styled(DialogPrimitive.Content, {
   ),
   variants: {
     size: {
-      md: "w-[95vw] max-w-md rounded-lg md:w-full",
-      lg: "w-[95vw] max-w-[60em] rounded-lg md:w-full",
-      xl: "w-[95vw] h-[95vh] max-w-[80em] rounded-lg md:w-full",
+      md: "w-[95vw] max-w-md rounded-lg ",
+      lg: "w-[95vw] max-w-[60em] rounded-lg ",
+      xl: "w-[95vw] h-[95vh] max-w-[80em] rounded-lg ",
     },
   },
   defaultVariants: {

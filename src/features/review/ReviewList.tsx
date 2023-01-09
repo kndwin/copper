@@ -2,6 +2,7 @@ import { Text, Tag, Button, Skeleton } from "~/ui";
 import { HiPlus, HiOutlineMenuAlt2 } from "react-icons/hi";
 import Link from "next/link";
 import { trpc, type RouterOutputs } from "~/utils/trpc";
+import { EmptyState } from "../common/EmptyState";
 
 export const ReviewList = () => {
   const reviewQuery = trpc.review.getReviewFromUser.useQuery();
@@ -25,7 +26,13 @@ export const ReviewList = () => {
         Create and manage reviews
       </Text>
       <div className="mt-12">
-        {reviewQuery.status === "loading" && <LoadingReviews />}
+        {reviewQuery.status === "loading" && (
+          <div className="flex flex-col gap-4">
+            {[...Array(5).keys()].map((index) => (
+              <Skeleton key={index} className="h-20 w-full" />
+            ))}
+          </div>
+        )}
         {reviewQuery.status === "success" && hasReviews && (
           <div className="flex flex-col gap-4">
             {reviewQuery.data?.map((review) => (
@@ -33,7 +40,15 @@ export const ReviewList = () => {
             ))}
           </div>
         )}
-        {reviewQuery.status === "success" && !hasReviews && <EmptyReviews />}
+        {reviewQuery.status === "success" && !hasReviews && (
+          <EmptyState
+            cta="New Review"
+            ctaHref="/dashboard/review/new"
+            icon={<HiOutlineMenuAlt2 />}
+            title="No Reviews posted"
+            description="You don't have any reviews yet. Start reviewing"
+          />
+        )}
       </div>
     </>
   );
@@ -77,13 +92,3 @@ const EmptyReviews = () => {
     </div>
   );
 };
-
-const LoadingReviews = () => (
-  <div className="flex flex-col gap-4">
-    <Skeleton className="h-20 w-full" />
-    <Skeleton className="h-20 w-full" />
-    <Skeleton className="h-20 w-full" />
-    <Skeleton className="h-20 w-full" />
-    <Skeleton className="h-20 w-full" />
-  </div>
-);

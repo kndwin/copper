@@ -86,7 +86,7 @@ export const placesRouter = router({
 
       return placeDetailsResponse;
     }),
-  getPlacesWithReviews: publicProcedure.query(async ({ ctx }) => {
+  getManyPlacesWithReviews: publicProcedure.query(async ({ ctx }) => {
     const places = await ctx.prisma.placeDetails.findMany({
       include: {
         _count: {
@@ -107,6 +107,37 @@ export const placesRouter = router({
     });
     return places;
   }),
+  getOnePlaceWithReviews: publicProcedure
+    .input(z.object({ placeId: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const places = await ctx.prisma.placeDetails.findFirst({
+        include: {
+          reviews: {
+            include: {
+              user: {
+                select: {
+                  email: true,
+                  image: true,
+                  id: true,
+                  name: true,
+                },
+              },
+            },
+          },
+        },
+        where: {
+          placeId: input.placeId,
+          reviews: {
+            some: {
+              status: {
+                equals: "PUBLISHED",
+              },
+            },
+          },
+        },
+      });
+      return places;
+    }),
 });
 
 const formatPlaceDetailsResponseToPrismaDBInput = (

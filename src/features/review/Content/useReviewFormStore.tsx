@@ -46,6 +46,7 @@ const initState: State = {
     review: null,
     socialFacebook: null,
     socialInstagram: null,
+    recommend: true,
   },
 };
 
