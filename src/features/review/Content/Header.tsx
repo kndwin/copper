@@ -1,15 +1,14 @@
-import { type ChangeEvent, useState } from "react";
 import { Status } from "@prisma/client";
-
-import { Page, IconToggleDarkMode } from "~/features/layout";
-import { HiOutlineSaveAs, HiX } from "react-icons/hi";
-import { Text, Button, Tag, Input, Menu, useToast, useAlert } from "~/ui";
-import { BackButton } from "~/features/common/Header";
-
-import { useReviewFormStore } from "./useReviewFormStore";
-import { trpc } from "~/utils/trpc";
 import { useRouter } from "next/router";
 import { match } from "ts-pattern";
+import { HiOutlineSaveAs, HiX } from "react-icons/hi";
+
+import { Page, IconToggleDarkMode } from "~/features/layout";
+import { Button, Tag, Menu, useToast, useAlert } from "~/ui";
+import { BackButton, InputTitle } from "~/features/common/Header";
+import { trpc } from "~/utils/trpc";
+
+import { useReviewFormStore } from "./useReviewFormStore";
 
 export const ReviewHeader = () => {
   const mode = useReviewFormStore((s) => s.mode);
@@ -18,7 +17,7 @@ export const ReviewHeader = () => {
       <div className="flex items-center gap-6">
         <BackButton />
         <div className="flex items-center gap-4">
-          <InputTitle />
+          <ReviewInputTitle />
           <TagStatus />
         </div>
       </div>
@@ -129,30 +128,15 @@ const ButtonSave = () => {
   );
 };
 
-const InputTitle = () => {
+const ReviewInputTitle = () => {
   const title = useReviewFormStore((s) => s.formData.title);
   const setFormState = useReviewFormStore((s) => s.setFormState);
-  const [mode, setMode] = useState<"edit" | "view">("view");
 
   return (
-    <>
-      {mode === "view" && (
-        <Text onClick={() => setMode("edit")} className="text-2xl font-bold">
-          {title}
-        </Text>
-      )}
-      {mode === "edit" && (
-        <Input
-          autoFocus
-          className="text-2xl font-bold"
-          defaultValue={title}
-          onBlur={(e: ChangeEvent<HTMLInputElement>) => {
-            setMode("view");
-            setFormState("title", e.target.value);
-          }}
-        />
-      )}
-    </>
+    <InputTitle
+      value={title}
+      onChange={(newTitle) => setFormState("title", newTitle)}
+    />
   );
 };
 

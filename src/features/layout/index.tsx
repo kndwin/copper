@@ -49,7 +49,7 @@ export const SignInButton = () => {
     <Button
       onClick={() =>
         signIn("google", {
-          callbackUrl: "/dashboard",
+          callbackUrl: "/dashboard/hitlist",
         })
       }
     >
