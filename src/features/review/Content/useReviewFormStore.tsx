@@ -1,5 +1,5 @@
 import { type Review } from "@prisma/client";
-import { createFormStore } from "~/features/common/forms";
+import { createFormStore } from "~/utils/form";
 
 type ReviewFormData = Omit<Review, "userId" | "createdAt" | "updatedAt">;
 

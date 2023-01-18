@@ -1,5 +1,5 @@
 import { type HitList } from "@prisma/client";
-import { createFormStore } from "~/features/common/forms";
+import { createFormStore } from "~/utils/form";
 
 type HitlistFormData = Omit<HitList, "userId" | "createdAt" | "updatedAt">;
 

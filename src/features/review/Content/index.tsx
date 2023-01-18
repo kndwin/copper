@@ -8,6 +8,8 @@ import { SearchCafe } from "./SearchCafe";
 import { useReviewFormStore } from "./useReviewFormStore";
 
 export * from "./Header";
+export * from "./useReviewFormStore";
+export * from "./SearchCafe";
 
 export const ReviewContent = () => {
   return (

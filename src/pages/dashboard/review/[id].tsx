@@ -1,12 +1,16 @@
+import { useEffect } from "react";
+
 import { Page } from "~/features/layout";
 import { type NextPageWithLayout } from "~/types/next-app";
-import { ReviewContent, ReviewHeader } from "~/features/review";
+import {
+  ReviewContent,
+  ReviewHeader,
+  useReviewFormStore,
+  CafeDetailsLoadingSkeleton,
+} from "~/features/review";
 import { trpc } from "~/utils/trpc";
 import { useRouter } from "next/router";
-import { useReviewFormStore } from "~/features/review/Content/useReviewFormStore";
-import { CafeDetailsLoadingSkeleton } from "~/features/review/Content/SearchCafe";
 import { Skeleton } from "~/ui";
-import { useEffect } from "react";
 
 const UpdateReviewPage: NextPageWithLayout = () => {
   const { query } = useRouter();
