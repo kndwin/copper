@@ -101,7 +101,7 @@ const ButtonSave = () => {
       .with("new", async () => {
         const newReview = await createOneMutation.mutateAsync(formData);
         send({
-          description: `Sucessfully created a new review: ${newReview.title}`,
+          description: `Created a new review: ${newReview.title}`,
           title: `Success`,
           type: "success",
         });
@@ -109,7 +109,7 @@ const ButtonSave = () => {
       .with("update", async () => {
         const updatedReview = await updateOneMutation.mutateAsync(formData);
         send({
-          description: `Sucessfully updated a review: ${updatedReview.title}`,
+          description: `Updated a review: ${updatedReview.title}`,
           title: `Success`,
           type: "success",
         });

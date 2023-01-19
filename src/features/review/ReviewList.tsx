@@ -1,5 +1,6 @@
-import { Text, Tag, Button, Skeleton } from "~/ui";
+import { useToast, Text, Tag, Button, Skeleton } from "~/ui";
 import { HiPlus, HiOutlineMenuAlt2 } from "react-icons/hi";
+import { HiArchiveBoxXMark } from "react-icons/hi2";
 import Link from "next/link";
 import { trpc, type RouterOutputs } from "~/utils/trpc";
 import { EmptyState } from "../common/EmptyState";
@@ -36,13 +37,13 @@ export const ReviewList = () => {
         {reviewQuery.status === "success" && hasReviews && (
           <div className="flex flex-col gap-4">
             {reviewQuery.data?.map((review) => (
-              <Review key={review.id} data={review} />
+              <ReviewItem key={review.id} data={review} />
             ))}
           </div>
         )}
         {reviewQuery.status === "success" && !hasReviews && (
           <EmptyState
-            cta="New Review"
+            ctaLabel="New Review"
             ctaHref="/dashboard/review/new"
             icon={<HiOutlineMenuAlt2 />}
             title="No Reviews posted"
@@ -57,38 +58,50 @@ export const ReviewList = () => {
 type TReviewProps = {
   data: RouterOutputs["review"]["getReviewFromUser"][number];
 };
-const Review = ({ data }: TReviewProps) => {
+
+const ReviewItem = ({ data }: TReviewProps) => {
+  const utils = trpc.useContext();
+  const { send } = useToast();
+  const deleteOneMutation = trpc.review.deleteOne.useMutation({
+    onSuccess: () => {
+      utils.places.getManyPlacesWithReviews.invalidate();
+      send({
+        description: ``,
+        title: "Succesfully deleted review",
+        type: "success",
+      });
+    },
+  });
+
+  const handleDeleteReview = async ({ id }: { id: string }) => {
+    deleteOneMutation.mutateAsync({ id });
+  };
+
   return (
     <Link href={`/dashboard/review/${data.id}`}>
-      <div className="cursor-point flex items-center justify-between rounded border border-sand-6 bg-sand-2 px-6 py-4 hover:bg-sand-4">
-        <div className="flex items-center gap-4">
-          <HiOutlineMenuAlt2 />
-          <Text className="text-lg font-bold">{data.title}</Text>
+      <div className="cursor-point group relative flex items-center justify-between rounded border border-sand-6 bg-sand-2 px-6 py-4 hover:bg-sand-4">
+        <div className="flex flex-col">
+          <div className="flex items-center gap-4">
+            <HiOutlineMenuAlt2 />
+            <Text className="text-lg font-bold">{data.title}</Text>
+          </div>
+          <div className="mt-2 rounded-sm bg-sand-3 py-2 px-4">
+            <Text className="text-lg font-bold">{data.place.name}</Text>
+            <Text className="text-sm">{data.place.formattedAddress}</Text>
+          </div>
         </div>
         <div>
           <Tag>{data.status}</Tag>
         </div>
+        <div className="invisible absolute top-0 right-[100%] flex h-full flex-col px-4 group-hover:visible">
+          <div
+            className="h-8 w-8 rounded-full bg-red-4 p-2 "
+            onClick={() => handleDeleteReview({ id: data.id })}
+          >
+            <HiArchiveBoxXMark className="" />
+          </div>
+        </div>
       </div>
     </Link>
-  );
-};
-
-const EmptyReviews = () => {
-  return (
-    <div className="flex flex-col items-center gap-4 rounded-lg border-2 border-dashed border-sand-6 p-8 text-center">
-      <HiOutlineMenuAlt2 className="h-12 w-12 rounded-full bg-sand-4 p-2" />
-      <Text className="text-xl font-bold">No Reviews posted</Text>
-      <Text>You don't have any reviews yet. Start reviewing</Text>
-      <Button
-        as={Link}
-        href="/dashboard/review/new"
-        variant="outline"
-        className="w-fit"
-        size="lg"
-      >
-        <HiPlus />
-        New Review
-      </Button>
-    </div>
   );
 };

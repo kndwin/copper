@@ -66,9 +66,11 @@ export const DisplayStatsContainer = ({
       {Object.entries(displayStats).map(([key, stats]) => (
         <div className="flex items-center gap-4" key={key}>
           <Text className="mr-auto font-bold capitalize">{`${key}: `}</Text>
-          {stats.map((stat, index) => (
-            <DisplayStat key={index} {...stat} />
-          ))}
+          {stats.map((stat, index) => {
+            const orderedStats = stats.map((s) => s.value).sort();
+            const ordinal = orderedStats.indexOf(stat.value) + 1 / stats.length;
+            return <DisplayStat ordinal={ordinal} key={index} {...stat} />;
+          })}
         </div>
       ))}
     </>
@@ -78,14 +80,18 @@ export const DisplayStatsContainer = ({
 type DisplayStatProps = {
   icon: ReactNode;
   value: number;
+  ordinal: number;
   tooltip: string;
 };
 
-const DisplayStat = ({ value, icon, tooltip }: DisplayStatProps) => {
+const DisplayStat = ({ value, icon, tooltip, ordinal }: DisplayStatProps) => {
   return (
     <Tooltip>
       <Tooltip.Trigger asChild>
-        <div className="flex h-fit items-center gap-2 rounded bg-sand-4 px-2 py-1">
+        <div
+          style={{ opacity: ordinal }}
+          className="flex h-fit items-center gap-2 rounded bg-sand-4 px-2 py-1"
+        >
           {icon}
           <Text>{value}</Text>
         </div>
@@ -194,7 +200,6 @@ const getDisplayStatistics = (stats: ReviewStats) => {
 };
 
 const getReviewStatistics = (reviews: Review[]) => {
-  // Hashmap
   const stats: ReviewStats = {
     wifi: {
       NONE: 0,

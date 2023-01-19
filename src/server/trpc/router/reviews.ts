@@ -69,8 +69,19 @@ export const reviewRouter = router({
     }),
   getReviewFromUser: publicProcedure.query(async ({ ctx }) => {
     return ctx.prisma.review.findMany({
+      include: {
+        place: {
+          select: {
+            formattedAddress: true,
+            name: true,
+          },
+        },
+      },
       where: {
         userId: ctx.session?.user?.id,
+      },
+      orderBy: {
+        updatedAt: "desc",
       },
     });
   }),

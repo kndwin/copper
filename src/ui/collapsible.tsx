@@ -1,6 +1,5 @@
-import { styled, type VariantPropsOf } from "classname-variants/react";
+import { styled } from "classname-variants/react";
 import * as CollapsiblePrimitive from "@radix-ui/react-collapsible";
-import cx from "classnames";
 
 const CollapsibleRoot = CollapsiblePrimitive.Root;
 const CollapsibleTrigger = styled(CollapsiblePrimitive.Trigger, {

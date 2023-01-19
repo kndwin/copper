@@ -1,4 +1,4 @@
-import { type ChangeEvent, useState } from "react";
+import { type ChangeEvent, useState, InputHTMLAttributes } from "react";
 
 import { Popover, Input, Text } from "~/ui";
 import { trpc } from "~/utils/trpc";
@@ -13,10 +13,15 @@ export type TPlacePrediction = NonNullable<
 
 type TAutocompletePlaceProps = {
   onSelectPrediction: (prediction: TPlacePrediction) => void;
+  inputProps?: Omit<
+    InputHTMLAttributes<HTMLInputElement>,
+    "onFocus" | "onBlur" | "defaultValue" | "onChange" | "color" | "size"
+  >;
 };
 
 export const AutocompletePlace = ({
   onSelectPrediction,
+  inputProps,
 }: TAutocompletePlaceProps) => {
   const [debouncedInput, setDebouncedInput] = useDebouncedState("", 500);
   const [openContent, setOpenContent] = useState(false);
@@ -51,6 +56,7 @@ export const AutocompletePlace = ({
             setDebouncedInput(e.target.value)
           }
           placeholder="Enter a cafe"
+          {...inputProps}
         />
         {isLoading && <AiOutlineLoading className="h-8 w-8 animate-spin" />}
       </Popover.Anchor>
