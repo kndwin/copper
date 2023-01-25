@@ -12,9 +12,9 @@ const initFormData: ReviewFormData = {
   food: "NONE",
   powerpoints: "NONE",
   wifi: "NONE",
-  review: null,
-  socialFacebook: null,
-  socialInstagram: null,
+  review: "",
+  socialFacebook: "",
+  socialInstagram: "",
   recommend: true,
 };
 

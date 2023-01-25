@@ -1,7 +1,7 @@
 import { Page } from "~/features/layout";
 import { type NextPageWithLayout } from "~/types/next-app";
 import {
-  ReviewContent,
+  NewReviewContent,
   ReviewHeader,
   useReviewFormStore,
 } from "~/features/review";
@@ -18,7 +18,7 @@ const NewReviewPage: NextPageWithLayout = () => {
     <Page>
       <ReviewHeader />
       <main className="p-4">
-        <ReviewContent />
+        <NewReviewContent />
       </main>
     </Page>
   );

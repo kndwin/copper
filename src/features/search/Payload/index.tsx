@@ -9,8 +9,17 @@ import { Text, Dialog, Skeleton } from "~/ui";
 import { PlaceDetails } from "./PlaceDetails";
 import { CollapsibleReview } from "./CollapsibleReview";
 
+type Place = RouterOutputs["places"]["getManyPlacesWithReviews"][number];
+
 export const GridCafes = () => {
   const { data, isLoading } = trpc.places.getManyPlacesWithReviews.useQuery();
+  const [openDialog, setOpenDialog] = useState(false);
+  const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);
+
+  const handleOnPlaceSelect = (place: Place) => {
+    setOpenDialog(true);
+    setSelectedPlace(place);
+  };
 
   return (
     <div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
@@ -19,36 +28,38 @@ export const GridCafes = () => {
           <Skeleton key={index} className="h-40 w-full" />
         ))}
       {data?.map((place) => (
-        <CafeCard key={place.placeId} place={place} />
+        <CafeCard
+          key={place.placeId}
+          place={place}
+          onPlaceSelect={(place) => handleOnPlaceSelect(place)}
+        />
       ))}
-    </div>
-  );
-};
-
-type CafeCardProps = {
-  place: RouterOutputs["places"]["getManyPlacesWithReviews"][number];
-};
-
-const CafeCard = ({ place }: CafeCardProps) => {
-  const [openDialog, setOpenDialog] = useState(false);
-  return (
-    <>
-      <StyledCafeCard onClick={() => setOpenDialog(true)}>
-        <Text className="text-lg font-bold text-sand-12">{place.name}</Text>
-        <Text className="text-sm text-sand-10">{place.formattedAddress}</Text>
-        <div className="ml-auto flex w-fit items-center gap-1 rounded bg-sand-3 px-2">
-          <HiOutlineDocumentText />
-          <Text>{place._count.reviews}</Text>
-        </div>
-      </StyledCafeCard>
       <Dialog.ContentControlled
         size="xl"
         open={openDialog}
         onOpenChange={(open) => setOpenDialog(open)}
       >
-        <DialogContentReviews place={place} />
+        <DialogContentReviews place={selectedPlace as Place} />
       </Dialog.ContentControlled>
-    </>
+    </div>
+  );
+};
+
+type CafeCardProps = {
+  place: Place;
+  onPlaceSelect: (place: Place) => void;
+};
+
+const CafeCard = ({ place, onPlaceSelect }: CafeCardProps) => {
+  return (
+    <StyledCafeCard onClick={() => onPlaceSelect(place)}>
+      <Text className="text-lg font-bold text-sand-12">{place.name}</Text>
+      <Text className="text-sm text-sand-10">{place.formattedAddress}</Text>
+      <div className="ml-auto flex w-fit items-center gap-1 rounded bg-sand-3 px-2">
+        <HiOutlineDocumentText />
+        <Text>{place._count.reviews}</Text>
+      </div>
+    </StyledCafeCard>
   );
 };
 

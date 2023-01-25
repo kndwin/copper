@@ -11,7 +11,22 @@ export * from "./Header";
 export * from "./useReviewFormStore";
 export * from "./SearchCafe";
 
-export const ReviewContent = () => {
+export const UpdateReviewContent = () => {
+  return (
+    <div className="flex w-full flex-col gap-y-6 pb-12">
+      <InputSocial />
+      <MarkdownReview />
+      <div className="grid grid-cols-2 gap-x-4 gap-y-6">
+        <OptionCoffee />
+        <OptionFood />
+        <OptionPowerpoint />
+        <OptionWifi />
+      </div>
+    </div>
+  );
+};
+
+export const NewReviewContent = () => {
   return (
     <div className="flex w-full flex-col gap-y-6 pb-12">
       <SearchCafe />

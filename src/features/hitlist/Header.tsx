@@ -40,8 +40,15 @@ const ButtonSave = () => {
   const handleSaveHitlist = async () => {
     match(mode)
       .with("new", async () => {
-        console.log({ formData });
-        const newHitlist = await createOneMutation.mutateAsync(formData);
+        const formattedFormData = {
+          ...formData,
+          places: formData.places.map((place) => ({
+            placeId: place.placeId as string,
+          })),
+        };
+        const newHitlist = await createOneMutation.mutateAsync(
+          formattedFormData
+        );
         console.log({ newHitlist });
         send({
           description: `Created a new hitlist: ${newHitlist.title}`,

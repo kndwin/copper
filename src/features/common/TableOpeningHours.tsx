@@ -1,3 +1,4 @@
+import { type ReactNode } from "react";
 import { type OpeningPeriod } from "@googlemaps/google-maps-services-js";
 import { styled } from "classname-variants/react";
 
@@ -7,19 +8,13 @@ type TTableOpeningHoursProps = {
 
 export const TableOpeningHours = ({ periods }: TTableOpeningHoursProps) => {
   return (
-    <div className="w-full overflow-hidden rounded-lg border border-sand-8 ">
+    <div className="w-full overflow-hidden ">
       <table className="w-full text-left text-sm text-sand-12">
-        <thead className="bg-tranparent border-b border-sand-8 text-xs uppercase text-sand-12">
+        <thead className="rounded-lg bg-sand-5 text-xs uppercase text-sand-12">
           <tr>
-            <Cell scope="col" as="th" align="left" size="lg">
-              Day
-            </Cell>
-            <Cell scope="col" as="th" align="left" size="lg">
-              Open
-            </Cell>
-            <Cell scope="col" as="th" align="left" size="lg">
-              Close
-            </Cell>
+            <HeaderCell>Day</HeaderCell>
+            <HeaderCell>Open</HeaderCell>
+            <HeaderCell>Close</HeaderCell>
           </tr>
         </thead>
         <tbody className="bg-tranparent">
@@ -36,12 +31,20 @@ export const TableOpeningHours = ({ periods }: TTableOpeningHoursProps) => {
   );
 };
 
+const HeaderCell = ({ children }: { children: ReactNode }) => {
+  return (
+    <Cell scope="col" as="th" align="left" size="lg" className="text-sand-12">
+      {children}
+    </Cell>
+  );
+};
+
 const Cell = styled("td", {
   base: "py-3 px-4",
   variants: {
     size: {
-      md: "",
-      lg: "text-sm",
+      md: "text-sm",
+      lg: "text-base",
     },
   },
   defaultVariants: {

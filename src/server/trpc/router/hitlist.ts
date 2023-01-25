@@ -13,6 +13,35 @@ const HitListModelInput = HitListModel.merge(
 });
 
 export const hitlistRouter = router({
+  getHitlistFromUser: publicProcedure.query(async ({ ctx }) => {
+    return ctx.prisma.hitList.findMany({
+      include: {
+        _count: {
+          select: {
+            places: true,
+          },
+        },
+      },
+      where: {
+        userId: ctx.session?.user?.id,
+      },
+    });
+  }),
+  getHitlistFromId: publicProcedure
+    .input(HitListModel.pick({ id: true }))
+    .query(async ({ ctx, input }) => {
+      const hitlist = await ctx.prisma.hitList.findFirst({
+        where: { id: input.id },
+        include: {
+          places: {
+            include: {
+              place: true,
+            },
+          },
+        },
+      });
+      return hitlist;
+    }),
   createOne: publicProcedure
     .input(HitListModelInput.omit({ id: true }))
     .mutation(async ({ ctx, input }) => {
@@ -26,11 +55,6 @@ export const hitlistRouter = router({
               data: [
                 ...places.map(({ placeId }) => ({
                   placeId,
-                  place: {
-                    connect: {
-                      placeId,
-                    },
-                  },
                 })),
               ],
             },
@@ -42,20 +66,19 @@ export const hitlistRouter = router({
           },
         },
       });
-      /*
-			const newHitlistPlaces = ctx.prisma.hitListPlace.createMany({
-				data: [...places.map(({ placeId }) => ({
-					placeId, 
-					place: {
-						connect: {
-							placeId
-						}
-					},
-					hitlistId: newHitlist.id
-				}))]
-			})
-			*/
       return newHitlist;
+    }),
+  updateOne: publicProcedure
+    .input(HitListModel)
+    .mutation(async ({ ctx, input }) => {
+      const { id, ...rest } = input;
+      const updatedReview = await ctx.prisma.hitList.update({
+        where: { id },
+        data: {
+          ...rest,
+        },
+      });
+      return updatedReview;
     }),
   deleteOne: publicProcedure
     .input(HitListModel.pick({ id: true }))

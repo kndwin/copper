@@ -12,6 +12,7 @@ export * from "./alert-dialog";
 export * from "./dialog";
 export * from "./collapsible";
 export * from "./tooltip";
+export * from "./checkbox";
 
 // Charts
 export * from "./charts/bar";

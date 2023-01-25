@@ -1,5 +1,5 @@
 import { useEffect, useState, type ChangeEvent } from "react";
-import { Input, Text } from "~/ui";
+import { Text, Checkbox } from "~/ui";
 import { useHitlistFormStore } from "./useHitlistFormStore";
 import {
   type TPlacePrediction,
@@ -7,6 +7,7 @@ import {
   Box,
   Label,
 } from "~/features/common";
+import { type HitListPlace, type PlaceDetails } from "@prisma/client";
 
 export const HitlistContent = () => {
   return (
@@ -37,24 +38,31 @@ const HitlistDescription = () => {
   );
 };
 
+type HitlistPlaceWithDetails = Partial<HitListPlace> & {
+  place?: Partial<PlaceDetails>;
+};
+
 const HitlistSearchPlace = () => {
   const setFormState = useHitlistFormStore((s) => s.setFormState);
+  const places = useHitlistFormStore((s) => s.formData.places);
+  const mode = useHitlistFormStore((s) => s.mode);
   const [placesWithDetails, setPlacesWithDetails] = useState<
-    TPlacePrediction[]
+    HitlistPlaceWithDetails[]
   >([]);
 
-  const handleAppendPlace = (place: TPlacePrediction) => {
-    setPlacesWithDetails((prev) => pushIfNew(prev, place, "place_id"));
+  const handleAppendPlace = (place: HitlistPlaceWithDetails) => {
+    setPlacesWithDetails((prev) => pushIfNew(prev, place, "placeId"));
   };
 
   useEffect(() => {
-    setFormState(
-      "places",
-      placesWithDetails.map((place) => ({
-        placeId: place.place_id,
-      }))
-    );
+    setFormState("places", placesWithDetails);
   }, [placesWithDetails, setFormState]);
+
+  useEffect(() => {
+    if (mode === "update" && places.length > 0) {
+      setPlacesWithDetails(places);
+    }
+  }, [mode, places]);
 
   return (
     <Box>
@@ -63,22 +71,29 @@ const HitlistSearchPlace = () => {
       </div>
       <AutocompletePlace
         onSelectPrediction={(prediction) => {
-          handleAppendPlace(prediction);
+          const formattedPlace = formatPredictionToHitlistPlace(prediction);
+          handleAppendPlace(formattedPlace);
         }}
         inputProps={{
           className: "max-w-sm",
         }}
       />
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        {placesWithDetails.map((place) => (
+      <div className="mt-2 grid grid-cols-1 gap-4 sm:grid-cols-2">
+        {placesWithDetails.map((hitlistPlace) => (
           <div
-            key={place.place_id}
-            className="flex flex-col rounded-sm border border-sand-8 bg-sand-3 px-4 py-2"
+            key={hitlistPlace.placeId}
+            className="flex items-center gap-4 rounded-sm border border-sand-8 bg-sand-3 px-4 py-2"
           >
-            <Text className="font-bold">
-              {place.structured_formatting.main_text}
-            </Text>
-            <Text className="text-sm">{place.description}</Text>
+            <Checkbox.Controlled
+              checked={true}
+              onChange={(checked) => console.log({ checked })}
+            />
+            <div className="flex flex-col">
+              <Text className="font-bold">{hitlistPlace?.place?.name}</Text>
+              <Text className="text-sm">
+                {hitlistPlace?.place?.formattedAddress}
+              </Text>
+            </div>
           </div>
         ))}
       </div>
@@ -91,4 +106,22 @@ function pushIfNew<T>(array: T[], item: T, field: keyof T): T[] {
     return [...array, item];
   }
   return [...array];
+}
+
+function formatPredictionToHitlistPlace(prediction: TPlacePrediction) {
+  const now = new Date(Date.now());
+  const newPlace = {
+    placeId: prediction.place_id,
+    id: `${Date.now()}`,
+    createdAt: now,
+    hitListId: `${Date.now()}`,
+    updatedAt: now,
+    visited: "NO",
+    place: {
+      formattedAddress: prediction.structured_formatting.main_text,
+      name: prediction.structured_formatting.main_text,
+    },
+  } as HitlistPlaceWithDetails;
+
+  return newPlace;
 }

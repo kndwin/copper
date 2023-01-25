@@ -2,7 +2,7 @@ import type { HitList, HitListPlace } from "@prisma/client";
 import { createFormStore } from "~/utils/form";
 
 type HitlistFormData = Omit<HitList, "userId" | "createdAt" | "updatedAt"> & {
-  places: Pick<HitListPlace, "placeId">[];
+  places: Partial<HitListPlace>[];
 };
 
 const initFormData: HitlistFormData = {

@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import { Page } from "~/features/layout";
 import { type NextPageWithLayout } from "~/types/next-app";
 import {
-  ReviewContent,
+  UpdateReviewContent,
   ReviewHeader,
   useReviewFormStore,
   CafeDetailsLoadingSkeleton,
@@ -35,14 +35,14 @@ const UpdateReviewPage: NextPageWithLayout = () => {
     if (query?.id) {
       setMode("update");
     }
-  }, [query]);
+  }, [query, setMode]);
 
   return (
     <Page>
       <ReviewHeader />
       <main className="p-4">
         {reviewQuery.isLoading && <LoadingSkeleton />}
-        {reviewQuery.isSuccess && <ReviewContent />}
+        {reviewQuery.isSuccess && <UpdateReviewContent />}
       </main>
     </Page>
   );
