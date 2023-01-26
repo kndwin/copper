@@ -1,5 +1,5 @@
 import { useEffect, useState, type ChangeEvent } from "react";
-import { Text, Checkbox } from "~/ui";
+import { Text, Checkbox, Button } from "~/ui";
 import { useHitlistFormStore } from "./useHitlistFormStore";
 import {
   type TPlacePrediction,
@@ -8,6 +8,7 @@ import {
   Label,
 } from "~/features/common";
 import { type HitListPlace, type PlaceDetails } from "@prisma/client";
+import produce from "immer";
 
 export const HitlistContent = () => {
   return (
@@ -45,6 +46,7 @@ type HitlistPlaceWithDetails = Partial<HitListPlace> & {
 const HitlistSearchPlace = () => {
   const setFormState = useHitlistFormStore((s) => s.setFormState);
   const places = useHitlistFormStore((s) => s.formData.places);
+  const formData = useHitlistFormStore((s) => s.formData);
   const mode = useHitlistFormStore((s) => s.mode);
   const [placesWithDetails, setPlacesWithDetails] = useState<
     HitlistPlaceWithDetails[]
@@ -54,8 +56,23 @@ const HitlistSearchPlace = () => {
     setPlacesWithDetails((prev) => pushIfNew(prev, place, "placeId"));
   };
 
+  const handleTogglePlace = ({
+    checked,
+    hitlistPlaceId,
+  }: HandleTogglePlaceProps) => {
+    setPlacesWithDetails(
+      produce((draft) => {
+        const place = draft.find((place) => place.id === hitlistPlaceId);
+        if (place) {
+          place.visited = checked ? "YES" : "NO";
+        }
+      })
+    );
+  };
+
   useEffect(() => {
     setFormState("places", placesWithDetails);
+    console.log({ placesWithDetails, places, formData });
   }, [placesWithDetails, setFormState]);
 
   useEffect(() => {
@@ -80,24 +97,52 @@ const HitlistSearchPlace = () => {
       />
       <div className="mt-2 grid grid-cols-1 gap-4 sm:grid-cols-2">
         {placesWithDetails.map((hitlistPlace) => (
-          <div
-            key={hitlistPlace.placeId}
-            className="flex items-center gap-4 rounded-sm border border-sand-8 bg-sand-3 px-4 py-2"
-          >
-            <Checkbox.Controlled
-              checked={true}
-              onChange={(checked) => console.log({ checked })}
-            />
-            <div className="flex flex-col">
-              <Text className="font-bold">{hitlistPlace?.place?.name}</Text>
-              <Text className="text-sm">
-                {hitlistPlace?.place?.formattedAddress}
-              </Text>
-            </div>
-          </div>
+          <HitlistPlaceItem
+            key={hitlistPlace.id}
+            handleTogglePlace={handleTogglePlace}
+            hitlistPlace={hitlistPlace}
+          />
         ))}
       </div>
     </Box>
+  );
+};
+
+type HandleTogglePlaceProps = {
+  checked: boolean;
+  hitlistPlaceId?: string;
+};
+type HitlistPlaceItemProps = {
+  hitlistPlace: HitlistPlaceWithDetails;
+  handleTogglePlace: (props: HandleTogglePlaceProps) => void;
+};
+const HitlistPlaceItem = ({
+  hitlistPlace,
+  handleTogglePlace,
+}: HitlistPlaceItemProps) => {
+  return (
+    <div
+      key={hitlistPlace.placeId}
+      className="flex flex-col items-center gap-4 rounded-sm border border-sand-8 bg-sand-3 px-4 py-2"
+    >
+      <div className="flex w-full flex-col justify-start">
+        <Text className="font-bold">{hitlistPlace?.place?.name}</Text>
+        <Text className="text-sm">{hitlistPlace?.place?.formattedAddress}</Text>
+      </div>
+      <div className="flex w-full items-center justify-between">
+        <div className="flex items-center gap-2">
+          <Label>Visited?</Label>
+          <Checkbox.Controlled
+            size="lg"
+            checked={hitlistPlace.visited === "YES"}
+            onChange={(checked) => {
+              handleTogglePlace({ checked, hitlistPlaceId: hitlistPlace.id });
+            }}
+          />
+        </div>
+        <Button>Leave Review</Button>
+      </div>
+    </div>
   );
 };
 

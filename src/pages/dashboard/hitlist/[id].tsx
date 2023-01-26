@@ -11,6 +11,7 @@ import { useHitlistFormStore } from "~/features/hitlist";
 const UpdateHitlistPage: NextPageWithLayout = () => {
   const { query } = useRouter();
   const setAllFormState = useHitlistFormStore((s) => s.setAllFormState);
+  const formData = useHitlistFormStore((s) => s.formData);
   const setMode = useHitlistFormStore((s) => s.setMode);
   // const utils = trpc.useContext();
   const hitlistQuery = trpc.hitlist.getHitlistFromId.useQuery(
@@ -18,7 +19,7 @@ const UpdateHitlistPage: NextPageWithLayout = () => {
     {
       enabled: Boolean(query?.id),
       onSuccess: (data) => {
-        if (data) {
+        if (data && formData.id === "") {
           setAllFormState(data);
         }
       },

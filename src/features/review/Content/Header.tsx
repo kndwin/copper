@@ -15,7 +15,7 @@ export const ReviewHeader = () => {
   return (
     <Page.Header>
       <div className="flex items-center gap-6">
-        <BackButton />
+        <BackButton href="/dashboard/review" />
         <div className="flex items-center gap-4">
           <ReviewInputTitle />
           <TagStatus />
@@ -80,6 +80,7 @@ const ButtonSave = () => {
   const mode = useReviewFormStore((s) => s.mode);
   const utils = trpc.useContext();
   const { send } = useToast();
+  const router = useRouter();
 
   const createOneMutation = trpc.review.createOne.useMutation({
     onSuccess: () => {
@@ -105,6 +106,7 @@ const ButtonSave = () => {
           title: `Success`,
           type: "success",
         });
+        router.push(`/dashboard/review/${newReview.id}`);
       })
       .with("update", async () => {
         const updatedReview = await updateOneMutation.mutateAsync(formData);

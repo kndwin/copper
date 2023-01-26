@@ -10,7 +10,7 @@ export const TableOpeningHours = ({ periods }: TTableOpeningHoursProps) => {
   return (
     <div className="w-full overflow-hidden ">
       <table className="w-full text-left text-sm text-sand-12">
-        <thead className="rounded-lg bg-sand-5 text-xs uppercase text-sand-12">
+        <thead className="rounded-lg bg-sand-4 text-xs uppercase text-sand-12">
           <tr>
             <HeaderCell>Day</HeaderCell>
             <HeaderCell>Open</HeaderCell>
@@ -19,7 +19,12 @@ export const TableOpeningHours = ({ periods }: TTableOpeningHoursProps) => {
         </thead>
         <tbody className="bg-tranparent">
           {periods?.map((period, index) => (
-            <tr key={index}>
+            <tr
+              key={index}
+              className={`${
+                index !== periods.length - 1 && "border-b border-sand-5"
+              }`}
+            >
               <Cell>{getDayName(period.open.day)}</Cell>
               <Cell>{getHourName(period.open?.time)}</Cell>
               <Cell>{getHourName(period.close?.time)}</Cell>
@@ -33,7 +38,7 @@ export const TableOpeningHours = ({ periods }: TTableOpeningHoursProps) => {
 
 const HeaderCell = ({ children }: { children: ReactNode }) => {
   return (
-    <Cell scope="col" as="th" align="left" size="lg" className="text-sand-12">
+    <Cell scope="col" as="th" align="left" className="text-sand-12">
       {children}
     </Cell>
   );

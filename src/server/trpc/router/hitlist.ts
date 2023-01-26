@@ -2,7 +2,7 @@ import { z } from "zod";
 import { router, publicProcedure } from "~/server/trpc/trpc";
 import { HitListModel, HitListPlaceModel } from "~/types/prismaZod";
 
-const HitListModelInput = HitListModel.merge(
+const HitListModelCreate = HitListModel.merge(
   z.object({
     places: z.array(z.object({ placeId: z.string() })),
   })
@@ -11,6 +11,12 @@ const HitListModelInput = HitListModel.merge(
   createdAt: true,
   updatedAt: true,
 });
+
+const HitlistModelUpdate = HitListModel.merge(
+  z.object({
+    places: z.array(HitListPlaceModel),
+  })
+);
 
 export const hitlistRouter = router({
   getHitlistFromUser: publicProcedure.query(async ({ ctx }) => {
@@ -43,7 +49,7 @@ export const hitlistRouter = router({
       return hitlist;
     }),
   createOne: publicProcedure
-    .input(HitListModelInput.omit({ id: true }))
+    .input(HitListModelCreate.omit({ id: true }))
     .mutation(async ({ ctx, input }) => {
       const userId = ctx.session?.user?.id as string;
       const { places, ...hitlistData } = input;
@@ -69,12 +75,18 @@ export const hitlistRouter = router({
       return newHitlist;
     }),
   updateOne: publicProcedure
-    .input(HitListModel)
+    .input(HitlistModelUpdate)
     .mutation(async ({ ctx, input }) => {
-      const { id, ...rest } = input;
+      console.dir({ input });
+      const { id, places, ...rest } = input;
       const updatedReview = await ctx.prisma.hitList.update({
         where: { id },
         data: {
+          places: {
+            updateMany: {
+              data: places,
+            },
+          },
           ...rest,
         },
       });

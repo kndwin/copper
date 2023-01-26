@@ -1,3 +1,4 @@
+import { useCallback } from "react";
 import { HiOutlineSaveAs, HiX } from "react-icons/hi";
 import { match } from "ts-pattern";
 
@@ -7,12 +8,13 @@ import { Page, IconToggleDarkMode } from "~/features/layout";
 
 import { useHitlistFormStore } from "./useHitlistFormStore";
 import { trpc } from "~/utils/trpc";
+import { useRouter } from "next/router";
 
 export const HitlistHeader = () => {
   const mode = useHitlistFormStore((s) => s.mode);
   return (
     <Page.Header>
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-4">
         <BackButton href="/dashboard/hitlist" />
         <HitlistInputTitle />
       </div>
@@ -29,6 +31,7 @@ const ButtonSave = () => {
   const formData = useHitlistFormStore((s) => s.formData);
   const mode = useHitlistFormStore((s) => s.mode);
   const utils = trpc.useContext();
+  const router = useRouter();
   const { send } = useToast();
 
   const createOneMutation = trpc.hitlist.createOne.useMutation({
@@ -37,7 +40,13 @@ const ButtonSave = () => {
     },
   });
 
-  const handleSaveHitlist = async () => {
+  const updateOneMutation = trpc.hitlist.updateOne.useMutation({
+    onSuccess: () => {
+      utils.hitlist.invalidate();
+    },
+  });
+
+  const handleSaveHitlist = useCallback(async () => {
     match(mode)
       .with("new", async () => {
         const formattedFormData = {
@@ -49,15 +58,24 @@ const ButtonSave = () => {
         const newHitlist = await createOneMutation.mutateAsync(
           formattedFormData
         );
-        console.log({ newHitlist });
         send({
           description: `Created a new hitlist: ${newHitlist.title}`,
           title: `Success`,
           type: "success",
         });
+        router.push(`/dashboard/hitlist/${newHitlist.id}`);
+      })
+      .with("update", async () => {
+        console.log({ formData });
+        const updatedHitlist = await updateOneMutation.mutateAsync(formData);
+        send({
+          description: `Updated a new hitlist: ${updatedHitlist.title}`,
+          title: `Success`,
+          type: "success",
+        });
       })
       .run();
-  };
+  }, [mode, formData]);
 
   const isSaveLoading = createOneMutation.isLoading;
 
