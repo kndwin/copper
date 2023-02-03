@@ -1,6 +1,6 @@
 import React from "react";
 import * as CheckboxPrimitive from "@radix-ui/react-checkbox";
-import { styled, VariantPropsOf } from "classname-variants/react";
+import { styled, type VariantPropsOf } from "classname-variants/react";
 import { HiCheck } from "react-icons/hi";
 
 const StyledCheckboxRoot = styled(CheckboxPrimitive.Root, {
